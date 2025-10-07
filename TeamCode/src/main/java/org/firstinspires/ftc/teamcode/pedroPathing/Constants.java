@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -11,12 +12,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
-    public static FollowerConstants followerConstants = new FollowerConstants();
-
+    public static FollowerConstants followerConstants = new FollowerConstants()
+            .lateralZeroPowerAcceleration(-66.8071)
+        .forwardZeroPowerAcceleration(-38.0746)
+        .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0001, 0.007, 0))
+            .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.067, 0.01));
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
+            .xVelocity(47.2831)
+            .yVelocity(32.0561)
             .rightFrontMotorName("Front-Right")
             .rightRearMotorName("Back-Right")
             .leftRearMotorName("Back-Left")
@@ -25,6 +31,7 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+
 
     public static ThreeWheelConstants localizerConstants = new ThreeWheelConstants()
             .forwardTicksToInches(.001989436789)
@@ -39,9 +46,9 @@ public class Constants {
             .leftEncoderDirection(Encoder.REVERSE)
             .rightEncoderDirection(Encoder.FORWARD)
             .strafeEncoderDirection(Encoder.REVERSE)
-            .forwardTicksToInches(0.003)
-            .strafeTicksToInches(0.003)
-            .turnTicksToInches(0.001);
+            .forwardTicksToInches(0.002946)
+            .strafeTicksToInches(0.003008)
+            .turnTicksToInches(0.0019425);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
