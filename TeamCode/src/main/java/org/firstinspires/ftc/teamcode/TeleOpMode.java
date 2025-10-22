@@ -18,8 +18,7 @@ public class TeleOpMode extends OpMode {
     @Override
     public void init() {
         follower  = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose());
-        follower.update();
+        follower.setStartingPose(new Pose(75, 120, Math.toRadians(0)));
     }
 
     @Override
@@ -44,6 +43,11 @@ public class TeleOpMode extends OpMode {
                 gamepad1.right_stick_x * slowModeMult,
                 isRobotCentric
         );
+
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.update();
 
     }
 }
