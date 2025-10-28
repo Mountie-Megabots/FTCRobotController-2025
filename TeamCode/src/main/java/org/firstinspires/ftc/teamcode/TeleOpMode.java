@@ -38,9 +38,9 @@ public class TeleOpMode extends OpMode {
         }
 
         follower.setTeleOpDrive(
-                gamepad1.left_stick_y * slowModeMult,
-                gamepad1.left_stick_x * slowModeMult,
-                gamepad1.right_stick_x * slowModeMult,
+                -gamepad1.left_stick_y * slowModeMult,
+                -gamepad1.left_stick_x * slowModeMult,
+                -gamepad1.right_stick_x * slowModeMult,
                 isRobotCentric
         );
 

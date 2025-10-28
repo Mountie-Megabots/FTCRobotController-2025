@@ -19,7 +19,7 @@ public class TestAuto extends OpMode {
     public void init() {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(75, 120, Math.toRadians(0)));
-        Path1 = new Path(new BezierLine(new Pose(75, 120), new Pose(75, 60)));
+        Path1 = new Path(new BezierLine(new Pose(75, 120), new Pose(75, 100)));
         Path1.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0));
 
 

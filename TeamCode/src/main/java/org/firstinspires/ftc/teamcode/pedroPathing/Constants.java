@@ -14,28 +14,28 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .lateralZeroPowerAcceleration(-66.8071)
-        .forwardZeroPowerAcceleration(-38.0746)
-        .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0001, 0.007, 0))
+            .lateralZeroPowerAcceleration(-76.4205)
+            .forwardZeroPowerAcceleration(-52.0753)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0001, 0.007, 0))
             .headingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.25, 0.01))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05, 0, 0.0000001, 0.01, 0.6))
             .centripetalScaling(0.0005)
-            .mass(25);
+            .mass(23.8);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 0.8, 0.01);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .xVelocity(47.2831)
-            .yVelocity(32.0561)
+            .xVelocity(56.66)
+            .yVelocity(47.16)
             .rightFrontMotorName("Front-Right")
             .rightRearMotorName("Back-Right")
             .leftRearMotorName("Back-Left")
             .leftFrontMotorName("Front-Left")
-            .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
+            .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
 
 
     public static ThreeWheelConstants localizerConstants = new ThreeWheelConstants()
