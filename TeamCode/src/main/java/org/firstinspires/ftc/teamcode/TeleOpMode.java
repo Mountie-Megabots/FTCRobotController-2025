@@ -1,33 +1,40 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.config.pedro.Constants;
+import org.firstinspires.ftc.teamcode.config.subsystems.Shooter;
+
+import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.extensions.pedro.PedroComponent;
+import dev.nextftc.ftc.NextFTCOpMode;
 
 @TeleOp
-public class TeleOpMode extends OpMode {
+public class TeleOpMode extends NextFTCOpMode {
+    {
+        addComponents(new PedroComponent(Constants::createFollower),  new SubsystemComponent(Shooter.INSTANCE));
+    }
+
     Follower follower;
     double slowModeMult = 1;
     boolean isRobotCentric = true;
     @Override
-    public void init() {
+    public void onInit() {
         follower  = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(75, 120, Math.toRadians(0)));
     }
 
     @Override
-    public void start() {
+    public void onStartButtonPressed() {
         follower.startTeleopDrive(true);
     }
 
     @Override
-    public void loop() {
+    public void onUpdate() {
         follower.update();
         if (gamepad1.rightBumperWasPressed()) {
             slowModeMult = (slowModeMult == 0.5) ? 1 : 0.5;
@@ -43,6 +50,8 @@ public class TeleOpMode extends OpMode {
                 -gamepad1.right_stick_x * slowModeMult,
                 isRobotCentric
         );
+
+
 
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
