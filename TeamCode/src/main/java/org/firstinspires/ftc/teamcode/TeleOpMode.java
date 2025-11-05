@@ -15,10 +15,14 @@ public class TeleOpMode extends OpMode {
     Follower follower;
     double slowModeMult = 1;
     boolean isRobotCentric = true;
+
+    ShooterSystem shooter;
+
     @Override
     public void init() {
         follower  = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(75, 120, Math.toRadians(0)));
+        shooter = new ShooterSystem(hardwareMap);
     }
 
     @Override
@@ -43,6 +47,12 @@ public class TeleOpMode extends OpMode {
                 -gamepad1.right_stick_x * slowModeMult,
                 isRobotCentric
         );
+
+        shooter.nextState(gamepad1.right_trigger > 0.2);
+
+        shooter.setStopState(gamepad1.b);
+
+        shooter.functions();
 
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
