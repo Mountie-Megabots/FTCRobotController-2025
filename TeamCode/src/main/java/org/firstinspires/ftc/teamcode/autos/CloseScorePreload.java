@@ -1,19 +1,15 @@
-package org.firstinspires.ftc.teamcode;
-
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+package org.firstinspires.ftc.teamcode.autos;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.State;
+import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Example Auto", group = "Examples")
-public class TestAuto extends OpMode {
+@Autonomous(name = "CloseScorePreload", group = "Blue")
+public class CloseScorePreload extends OpMode {
     Follower follower;
     ShooterSystem shooter;
     public Path Path1;
@@ -29,9 +25,9 @@ public class TestAuto extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(0, 0, Math.toRadians(0)));
-        Path1 = new Path(new BezierLine(new Pose(0, 0), new Pose(105, 17)));
-        Path1.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45));
+        follower.setStartingPose(Constants.paths.CloseScoreConst.leftStart);
+        Path1 = new Path(Constants.paths.CloseScoreConst.backupLeft);
+        Path1.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(155));
 
 
     }
@@ -64,7 +60,8 @@ public class TestAuto extends OpMode {
         shooter.functions();
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("heading", Math.toDegrees(follower.getPose().getHeading()));
+        shooter.pushTelemetry(telemetry);
         telemetry.update();
     }
 
