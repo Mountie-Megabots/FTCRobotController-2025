@@ -52,7 +52,7 @@ public class ShooterSystem {
         nextState = state;
     }
 
-    void setStopState(boolean state) {
+   public void setStopState(boolean state) {
         stopState = state;
     }
 
@@ -97,7 +97,7 @@ public class ShooterSystem {
                 intake.setPower(0);
                 holder.setPower(0);
                 //shoot button pressed
-                if (nextState ) {
+                if (nextState  && ((DcMotorEx) shooter).getVelocity() > 2100) {
                     intake.setPower(1);
                     holder.setPower(1);
                 } else if (stopState) {
@@ -122,7 +122,7 @@ public class ShooterSystem {
     public void functionsAuto(){
         switch(functionState){
             case Nothing:
-                functionState = State.intake;
+                functionState = State.spinup;
                 break;
             case intake:
                 intake.setPower(1);
@@ -139,7 +139,7 @@ public class ShooterSystem {
             case retract:
                 intake.setPower(-1);
                 holder.setPower(-1);
-                if (timer.seconds() > 0.25) {
+                if (timer.seconds() > 0.46) {
                     functionState = State.spinup;
                 }
                 //if the intake has passed the distance needed for retracting
@@ -173,7 +173,7 @@ public class ShooterSystem {
                 intake.setPower(0);
                 holder.setPower(0);
                 shooter.setPower(0);
-                functionState = State.Nothing;
+                functionState = State.intake;
                 stopState = false;
                 nextState = false;
                 break;
