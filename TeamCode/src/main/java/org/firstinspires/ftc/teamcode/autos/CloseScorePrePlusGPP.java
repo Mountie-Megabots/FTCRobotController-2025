@@ -56,7 +56,7 @@ public class CloseScorePrePlusGPP extends OpMode {
         Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
 
         Path5 = new Path(new BezierCurve(Constants.paths.GrabConst.GPPStart, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.CloseScoreConst.backupLeftEnd));
-        Path2.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(155));
+        Path5.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(155));
     }
 
     private void runPath() {
