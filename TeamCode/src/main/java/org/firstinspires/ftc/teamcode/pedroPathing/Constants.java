@@ -19,8 +19,8 @@ public class Constants {
     public static final class paths {
         public static final class GrabConst {
             public static Pose GPPStart = new Pose(48.000, 84.000, Math.toRadians(180));
-            public static BezierLine GPP = new BezierLine(new Pose(48.000, 84.000, Math.toRadians(180)), new Pose(18.000, 84.000, Math.toRadians(180)));
-            public static BezierLine GPPRev = new BezierLine(new Pose(18.000, 84.000, Math.toRadians(180)), new Pose(48.000, 84.000, Math.toRadians(180)));
+            public static BezierLine GPP = new BezierLine(new Pose(48.000, 84.000, Math.toRadians(180)), new Pose(22.000, 84.000, Math.toRadians(180)));
+            public static BezierLine GPPRev = new BezierLine(new Pose(22.000, 84.000, Math.toRadians(180)), new Pose(48.000, 84.000, Math.toRadians(180)));
             public static Pose PGPStart = new Pose(48.000, 60.000, Math.toRadians(180));
             public static BezierLine PGP = new BezierLine(new Pose(48.000, 60.000, Math.toRadians(180)), new Pose(18.000, 60.000, Math.toRadians(180)));
             public static Pose PPGStart = new Pose(48.000, 36.000, Math.toRadians(180));
@@ -29,20 +29,20 @@ public class Constants {
         }
         public static final class CloseScoreConst {
             //left sided
-            public static BezierLine backupLeft = new BezierLine(new Pose(27.364, 132.561, Math.toRadians(145)), new Pose(31.402, 129.196, Math.toRadians(155)));
+            public static BezierLine backupLeft = new BezierLine(new Pose(27.364, 132.561, Math.toRadians(145)), new Pose(31.402, 129.196, Math.toRadians(160)));
             //degrees: 145
-            public static Pose backupLeftEnd = new Pose(31.402, 129.196, Math.toRadians(155));
+            public static Pose backupLeftEnd = new Pose(31.402, 129.196, Math.toRadians(160));
             public static Pose leftStart = new Pose(27.364, 132.561, Math.toRadians(145));
 
-            public static Pose curveControlPoint = new Pose(71.776, 95.776);
+            public static Pose curveControlPoint = new Pose(95, 95.776);
         }
 
     }
 
 
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .lateralZeroPowerAcceleration(-76.4205)
-            .forwardZeroPowerAcceleration(-52.0753)
+            .lateralZeroPowerAcceleration(-66.8805)
+            .forwardZeroPowerAcceleration(-56.9753)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0001, 0.007, 0))
             .headingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.25, 0.01))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05, 0, 0.0000001, 0.01, 0.6))
@@ -53,8 +53,8 @@ public class Constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .xVelocity(56.66)
-            .yVelocity(47.16)
+            .xVelocity(59.23)
+            .yVelocity(49.77)
             .rightFrontMotorName("Front-Right")
             .rightRearMotorName("Back-Right")
             .leftRearMotorName("Back-Left")

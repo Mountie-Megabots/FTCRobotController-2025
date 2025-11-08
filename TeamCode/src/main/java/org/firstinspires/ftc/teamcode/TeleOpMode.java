@@ -6,6 +6,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -33,6 +34,9 @@ public class TeleOpMode extends OpMode {
     @Override
     public void loop() {
         follower.update();
+        if (gamepad1.back) {
+            follower.setPose(new Pose(0,0,0));
+        }
         if (gamepad1.rightBumperWasPressed()) {
             slowModeMult = (slowModeMult == 0.5) ? 1 : 0.5;
         }
@@ -48,6 +52,14 @@ public class TeleOpMode extends OpMode {
                 isRobotCentric
         );
 
+        if (gamepad1.dpadUpWasPressed()) {
+            shooter.changeShooterSpeed(50);
+        }
+
+        if (gamepad1.dpadDownWasPressed()) {
+            shooter.changeShooterSpeed(-50);
+        }
+
         shooter.nextState(gamepad1.right_trigger > 0.2);
 
         shooter.setStopState(gamepad1.b);
@@ -57,6 +69,7 @@ public class TeleOpMode extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+        shooter.pushTelemetry(telemetry);
         telemetry.update();
 
     }

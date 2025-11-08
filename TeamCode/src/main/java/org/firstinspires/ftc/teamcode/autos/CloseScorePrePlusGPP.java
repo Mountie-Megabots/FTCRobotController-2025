@@ -62,6 +62,7 @@ public class CloseScorePrePlusGPP extends OpMode {
     private void runPath() {
         switch(pathState){
             case firstPath:
+                shooter.nextState(true);
                 follower.followPath(Path1, true);
                 pathState = State.firstPathInt;
                 break;
@@ -95,7 +96,7 @@ public class CloseScorePrePlusGPP extends OpMode {
             case pickup:
                 follower.followPath(Path3);
                 pathState = State.pickupInt;
-                follower.setMaxPower(0.25);
+                follower.setMaxPower(0.2);
                 break;
 
             case pickupInt:
@@ -144,7 +145,7 @@ public class CloseScorePrePlusGPP extends OpMode {
     public void loop() {
         runPath();
         follower.update();
-        shooter.functionsAuto();
+        shooter.functions();
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", Math.toDegrees(follower.getPose().getHeading()));

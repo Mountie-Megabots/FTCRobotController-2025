@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.Timer;
 
 public class ShooterSystem {
 
@@ -18,14 +18,12 @@ public class ShooterSystem {
     private boolean nextState;
 
     private boolean stopState;
-
     ElapsedTime timer;
-    int high_speed;
-    int mid_speed = 2500;
-    int no_speed;
-    int low_speed;
+    int shooterSpeedSet = 1850;
     int target;
     int retractDistance;
+
+    int speedThreshold = 1800;
 
     enum State{
         Nothing,
@@ -50,6 +48,10 @@ public class ShooterSystem {
 
     public void nextState(boolean state) {
         nextState = state;
+    }
+
+    public boolean shooterAtSpeed() {
+        return ((DcMotorEx) shooter).getVelocity() > speedThreshold;
     }
 
    public void setStopState(boolean state) {
@@ -79,6 +81,7 @@ public class ShooterSystem {
                 holder.setPower(-1);
                 if (timer.seconds() > 0.25) {
                     functionState = State.spinup;
+                    timer.reset();
                 }
                 //if the intake has passed the distance needed for retracting
                 // begin spinning up the shooter otherwise keep moving to position
@@ -86,18 +89,20 @@ public class ShooterSystem {
             case spinup:
                 intake.setPower(0);
                 holder.setPower(0);
-                ((DcMotorEx) shooter).setVelocity(mid_speed);
-                double currentSpeed = ((DcMotorEx) shooter).getVelocity();
+                ((DcMotorEx) shooter).setVelocity(shooterSpeedSet);
                 //if the shooter has reached the desired speed, set state to armed and hold velocity
                 //otherwise, keep attempting to reach velocity
-
-                functionState = (currentSpeed > 2000) ? State.armed : State.spinup;
+                if (stopState) {
+                    stopState = false;
+                    functionState = State.intake;
+                }
+                functionState = (shooterAtSpeed() || timer.seconds() > 2) ? State.armed : State.spinup;
                 break;
             case armed:
                 intake.setPower(0);
                 holder.setPower(0);
                 //shoot button pressed
-                if (nextState  && ((DcMotorEx) shooter).getVelocity() > 2100) {
+                if (nextState  && shooterAtSpeed()) {
                     intake.setPower(1);
                     holder.setPower(1);
                 } else if (stopState) {
@@ -119,69 +124,12 @@ public class ShooterSystem {
         }
     }
 
-    public void functionsAuto(){
-        switch(functionState){
-            case Nothing:
-                functionState = State.spinup;
-                break;
-            case intake:
-                intake.setPower(1);
-                shooter.setPower(0);
-                holder.setPower(0);
-                //if right trigger pressed, begin retracting, otherwise stay intaking
-                if((nextState)){
-                    timer.reset();
-                    functionState = State.retract;
-                    nextState = false;
-                }
-                break;
-
-            case retract:
-                intake.setPower(-1);
-                holder.setPower(-1);
-                if (timer.seconds() > 0.46) {
-                    functionState = State.spinup;
-                }
-                //if the intake has passed the distance needed for retracting
-                // begin spinning up the shooter otherwise keep moving to position
-                break;
-            case spinup:
-                intake.setPower(0);
-                holder.setPower(0);
-                ((DcMotorEx) shooter).setVelocity(mid_speed);
-                double currentSpeed = ((DcMotorEx) shooter).getVelocity();
-                //if the shooter has reached the desired speed, set state to armed and hold velocity
-                //otherwise, keep attempting to reach velocity
-
-                functionState = (currentSpeed > 2200) ? State.armed : State.spinup;
-                break;
-            case armed:
-                intake.setPower(0);
-                holder.setPower(0);
-                //shoot button pressed
-                if (nextState && ((DcMotorEx) shooter).getVelocity() > 2100) {
-                    intake.setPower(1);
-                    holder.setPower(1);
-                } else if (stopState) {
-                    // if stop shoot button pressed
-                    functionState = State.stop;
-                } else {
-                    //nothing done
-                }
-                break;
-            case stop:
-                intake.setPower(0);
-                holder.setPower(0);
-                shooter.setPower(0);
-                functionState = State.intake;
-                stopState = false;
-                nextState = false;
-                break;
-
-        }
+    public void changeShooterSpeed(int amount) {
+        shooterSpeedSet += amount;
     }
 
     public void pushTelemetry(Telemetry telemetry) {
         telemetry.addData("Shooter Velocity", ((DcMotorEx) shooter).getVelocity());
+        telemetry.addData("Shooter Velocity Setting", shooterSpeedSet);
     }
 }
