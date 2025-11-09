@@ -66,7 +66,7 @@ public class ShooterSystem {
                 break;
             case intake:
                 intake.setPower(1);
-                shooter.setPower(0);
+                shooter.setPower(-0.2);
                 holder.setPower(0);
                 //if right trigger pressed, begin retracting, otherwise stay intaking
                 if((nextState)){

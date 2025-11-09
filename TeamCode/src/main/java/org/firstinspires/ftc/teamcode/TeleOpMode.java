@@ -22,7 +22,7 @@ public class TeleOpMode extends OpMode {
     @Override
     public void init() {
         follower  = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(75, 120, Math.toRadians(0)));
+        follower.setStartingPose((follower.getPose() == null) ? new Pose(0,0,0) : follower.getPose());
         shooter = new ShooterSystem(hardwareMap);
     }
 

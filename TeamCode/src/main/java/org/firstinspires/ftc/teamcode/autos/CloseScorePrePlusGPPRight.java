@@ -2,19 +2,18 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.sun.tools.javac.code.Attribute;
 
-import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "CloseScorePrePlusGPP", group = "Blue")
-public class CloseScorePrePlusGPP extends OpMode {
+@Disabled
+@Autonomous(name = "CloseScorePrePlusGPPRight", group = "Unfinished")
+public class CloseScorePrePlusGPPRight extends OpMode {
     Follower follower;
     ShooterSystem shooter;
     public Path Path1, Path2, Path3, Path4, Path5;
@@ -41,12 +40,12 @@ public class CloseScorePrePlusGPP extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.leftStart);
+        follower.setStartingPose(Constants.paths.CloseScoreConst.rightStart);
 
-        Path1 = new Path(Constants.paths.CloseScoreConst.backupLeft);
+        Path1 = new Path(Constants.paths.CloseScoreConst.backupRight);
         Path1.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(155));
 
-        Path2 = new Path(new BezierCurve(Constants.paths.CloseScoreConst.backupLeftEnd, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.GrabConst.GPPStart));
+        Path2 = new Path(new BezierCurve(Constants.paths.CloseScoreConst.backupRightEnd, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.GrabConst.GPPStart));
         Path2.setLinearHeadingInterpolation(Math.toRadians(155), Math.toRadians(180));
 
         Path3 = new Path(Constants.paths.GrabConst.GPP);
@@ -55,7 +54,7 @@ public class CloseScorePrePlusGPP extends OpMode {
         Path4 = new Path(Constants.paths.GrabConst.GPPRev);
         Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
 
-        Path5 = new Path(new BezierCurve(Constants.paths.GrabConst.GPPStart, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.CloseScoreConst.backupLeftEnd));
+        Path5 = new Path(new BezierCurve(Constants.paths.GrabConst.GPPStart, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.CloseScoreConst.backupRightEnd));
         Path5.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(155));
     }
 

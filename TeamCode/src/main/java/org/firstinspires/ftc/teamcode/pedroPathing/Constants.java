@@ -17,10 +17,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Constants {
 
     public static final class paths {
+        public static int farShotHeading = -20;
         public static final class GrabConst {
-            public static Pose GPPStart = new Pose(48.000, 84.000, Math.toRadians(180));
-            public static BezierLine GPP = new BezierLine(new Pose(48.000, 84.000, Math.toRadians(180)), new Pose(22.000, 84.000, Math.toRadians(180)));
-            public static BezierLine GPPRev = new BezierLine(new Pose(22.000, 84.000, Math.toRadians(180)), new Pose(48.000, 84.000, Math.toRadians(180)));
+            public static Pose GPPStart = new Pose(52.000, 84.000, Math.toRadians(180));
+            public static BezierLine GPP = new BezierLine(new Pose(52.000, 84.000, Math.toRadians(180)), new Pose(23.000, 84.000, Math.toRadians(180)));
+            public static BezierLine GPPRev = new BezierLine(new Pose(23.000, 84.000, Math.toRadians(180)), new Pose(52.000, 84.000, Math.toRadians(180)));
             public static Pose PGPStart = new Pose(48.000, 60.000, Math.toRadians(180));
             public static BezierLine PGP = new BezierLine(new Pose(48.000, 60.000, Math.toRadians(180)), new Pose(18.000, 60.000, Math.toRadians(180)));
             public static Pose PPGStart = new Pose(48.000, 36.000, Math.toRadians(180));
@@ -28,11 +29,20 @@ public class Constants {
             //degrees for all: 180
         }
         public static final class CloseScoreConst {
-            //left sided
-            public static BezierLine backupLeft = new BezierLine(new Pose(27.364, 132.561, Math.toRadians(145)), new Pose(31.402, 129.196, Math.toRadians(160)));
+            //right side
+
             //degrees: 145
-            public static Pose backupLeftEnd = new Pose(31.402, 129.196, Math.toRadians(160));
-            public static Pose leftStart = new Pose(27.364, 132.561, Math.toRadians(145));
+            public static Pose backupRightEnd = new Pose(31.402, 129.196, Math.toRadians(160));
+            public static Pose rightStart = new Pose(27.364, 132.561, Math.toRadians(145));
+
+            public static BezierLine backupRight = new BezierLine(rightStart, backupRightEnd);
+
+            //center
+            public static Pose centerStart = new Pose(20.5, 123, Math.toRadians(145));
+            public static Pose centerEnd = new Pose(21, 122, Math.toRadians(145));
+            public static BezierLine backupCenter = new BezierLine(centerStart, centerEnd);
+
+
 
             public static Pose curveControlPoint = new Pose(95, 95.776);
         }
@@ -41,20 +51,23 @@ public class Constants {
 
 
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .lateralZeroPowerAcceleration(-66.8805)
-            .forwardZeroPowerAcceleration(-56.9753)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0001, 0.007, 0))
-            .headingPIDFCoefficients(new PIDFCoefficients(4, 0, 0.25, 0.01))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05, 0, 0.0000001, 0.01, 0.6))
-            .centripetalScaling(0.0005)
-            .mass(23.8);
+            .lateralZeroPowerAcceleration(-79.2023)
+            .forwardZeroPowerAcceleration(-52.723)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.2, 0.00005, 0.025, 0.04))
+            .headingPIDFCoefficients(new PIDFCoefficients(3, 0.001, 0.1, 0.04))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(1, 0.5, 0.075, 0, 0.04))
+            .useSecondaryDrivePIDF(false)
+            .useSecondaryHeadingPIDF(false)
+            .useSecondaryTranslationalPIDF(false)
+            .centripetalScaling(0)
+            .mass(10.7);
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 0.8, 0.01);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 0.7, 1);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .xVelocity(59.23)
-            .yVelocity(49.77)
+            .xVelocity(57.67577)
+            .yVelocity(46.208)
             .rightFrontMotorName("Front-Right")
             .rightRearMotorName("Back-Right")
             .leftRearMotorName("Back-Left")
@@ -62,25 +75,26 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            ;
 
 
     public static ThreeWheelConstants localizerConstants = new ThreeWheelConstants()
 //            .forwardTicksToInches(.001989436789)
 //            .strafeTicksToInches(.001989436789)
 //            .turnTicksToInches(.001989436789)
-            .leftPodY(2.6)
-            .rightPodY(-2.8)
-            .strafePodX(-3.4)
+            .leftPodY(4.0625)
+            .rightPodY(-4.0625)
+            .strafePodX(-5.125)
             .leftEncoder_HardwareMapName("Front-Left")
             .rightEncoder_HardwareMapName("Back-Right")
             .strafeEncoder_HardwareMapName("Front-Right")
             .leftEncoderDirection(Encoder.REVERSE)
             .rightEncoderDirection(Encoder.FORWARD)
             .strafeEncoderDirection(Encoder.REVERSE)
-            .forwardTicksToInches(0.002946)
-            .strafeTicksToInches(0.003008)
-            .turnTicksToInches(0.0019425);
+            .forwardTicksToInches(0.002984)
+            .strafeTicksToInches(0.003)
+            .turnTicksToInches(0.002923);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

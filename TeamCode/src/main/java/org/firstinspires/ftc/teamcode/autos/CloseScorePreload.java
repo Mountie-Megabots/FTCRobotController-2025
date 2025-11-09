@@ -25,8 +25,8 @@ public class CloseScorePreload extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.leftStart);
-        Path1 = new Path(Constants.paths.CloseScoreConst.backupLeft);
+        follower.setStartingPose(Constants.paths.CloseScoreConst.rightStart);
+        Path1 = new Path(Constants.paths.CloseScoreConst.backupRight);
         Path1.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(155));
 
 
