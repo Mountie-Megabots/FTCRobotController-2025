@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -19,11 +17,15 @@ public class ShooterSystem {
 
     private boolean stopState;
     ElapsedTime timer;
-    int shooterSpeedSet = 1850;
+
+    int slowShooterSpeedSet = 1850;
+    int customShooterSpeedSet = 2400;
+
+    int shooterSpeed = 0;
     int target;
     int retractDistance;
 
-    int speedThreshold = 1800;
+    int speedThreshold = 0;
 
     enum State{
         Nothing,
@@ -58,8 +60,11 @@ public class ShooterSystem {
         stopState = state;
     }
 
+    public void setShooterSlow() {shooterSpeed = slowShooterSpeedSet;}
+    public void setShooterFast() {shooterSpeed = customShooterSpeedSet;}
 
     public void functions(){
+        speedThreshold = shooterSpeed - 50;
         switch(functionState){
             case Nothing:
                 functionState = State.intake;
@@ -89,14 +94,15 @@ public class ShooterSystem {
             case spinup:
                 intake.setPower(0);
                 holder.setPower(0);
-                ((DcMotorEx) shooter).setVelocity(shooterSpeedSet);
+                ((DcMotorEx) shooter).setVelocity(shooterSpeed);
                 //if the shooter has reached the desired speed, set state to armed and hold velocity
                 //otherwise, keep attempting to reach velocity
+
+                functionState = (shooterAtSpeed() || timer.seconds() > 2) ? State.armed : State.spinup;
                 if (stopState) {
                     stopState = false;
                     functionState = State.intake;
                 }
-                functionState = (shooterAtSpeed() || timer.seconds() > 2) ? State.armed : State.spinup;
                 break;
             case armed:
                 intake.setPower(0);
@@ -125,11 +131,12 @@ public class ShooterSystem {
     }
 
     public void changeShooterSpeed(int amount) {
-        shooterSpeedSet += amount;
+        customShooterSpeedSet += amount;
     }
 
     public void pushTelemetry(Telemetry telemetry) {
+        telemetry.addData("Shooter State", functionState);
         telemetry.addData("Shooter Velocity", ((DcMotorEx) shooter).getVelocity());
-        telemetry.addData("Shooter Velocity Setting", shooterSpeedSet);
+        telemetry.addData("Shooter Custom Velocity Setting", customShooterSpeedSet);
     }
 }
