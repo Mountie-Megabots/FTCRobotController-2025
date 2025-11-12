@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "CloseScorePreload", group = "Blue")
-public class CloseScorePreload extends OpMode {
+@Autonomous(name = "CloseThreePieceBlue", group = "Blue")
+public class CloseThreePieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
     public Path Path1;

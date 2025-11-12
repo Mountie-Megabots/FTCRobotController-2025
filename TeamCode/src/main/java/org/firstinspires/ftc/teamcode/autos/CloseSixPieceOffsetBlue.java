@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Disabled
-@Autonomous(name = "CloseScorePrePlusGPPRight", group = "Unfinished")
-public class CloseScorePrePlusGPPRight extends OpMode {
+@Autonomous(name = "CloseSixPieceOffsetBlue", group = "Unfinished")
+public class CloseSixPieceOffsetBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
     public Path Path1, Path2, Path3, Path4, Path5;

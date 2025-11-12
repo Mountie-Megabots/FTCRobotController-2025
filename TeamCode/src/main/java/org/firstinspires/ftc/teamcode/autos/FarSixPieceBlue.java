@@ -10,13 +10,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
-@Autonomous(name = "CloseScorePreLusGPPPlusPGPCenter", group = "Unfinished")
-public class CloseScorePrePlusGPPPlusPGPCenter extends OpMode {
+@Autonomous(name = "FarSixPieceBlue", group = "Blue")
+public class FarSixPieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path backupShoot, Path2, Path3, Path4, Path5, Path6, Path7;
-    public PathChain pickupGPP, pickupPGP;
+    public Path path1, path2, path3, path4;
+    public PathChain pickupChain;
     ElapsedTime timer;
 
     boolean initVar = false;
@@ -34,42 +33,38 @@ public class CloseScorePrePlusGPPPlusPGPCenter extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
-
-        backupShoot = new Path(Constants.paths.CloseScoreConst.backupCenter);
-        backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(145));
-
-        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
-        Path2.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(180));
-
-        Path3 = new Path(Constants.paths.GrabConst.GPP);
-        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
-        Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(145));
-
-        pickupGPP = new PathChain(Path2, Path3, Path4);
-
-        Path5 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart));
-        Path5.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(180));
-
-        Path6 = new Path(Constants.paths.GrabConst.PGP);
-        Path7 = new Path();
-        pickupPGP = new PathChain();
-
+        follower.setStartingPose(Constants.paths.FarScoreConst.farStart);
+        //insert bezier line or curve
+        path1 = new Path(new BezierLine(Constants.paths.FarScoreConst.farStart, Constants.paths.FarScoreConst.farScore));
+        //put in paths in chain
+        path1.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(112.5));
+        path2 = new Path(new BezierLine(Constants.paths.FarScoreConst.farScore, Constants.paths.GrabConst.PPGStart));
+        path2.setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(180));
+        path3 = new Path(Constants.paths.GrabConst.PPG);
+        path3.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
+        path4 = new Path(new BezierLine(Constants.paths.GrabConst.PPG.getLastControlPoint(), Constants.paths.FarScoreConst.farScore));
+        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(112.5));
+        pickupChain = new PathChain(path2, path3, path4);
     }
 
     private void runPath() {
         switch (pathState) {
             case firstPath:
-                follower.followPath(backupShoot, true);
+                follower.followPath(path1, true);
                 pathState = State.shoot1;
                 break;
 
             case shoot1:
+                //ready shooter
+                shooter.setShooterFast();
                 shooter.nextState(true);
                 if (!follower.isBusy()) {
+                    //fire
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
                         pathState = State.toPickup;
+                        shooter.setStopState(true);
+                        shooter.nextState(false);
                     }
                 } else {
                     timer.reset();
@@ -78,23 +73,26 @@ public class CloseScorePrePlusGPPPlusPGPCenter extends OpMode {
                 break;
 
             case toPickup:
-                follower.followPath(pickupGPP);
+                follower.followPath(pickupChain);
                 pathState = State.shoot2;
                 break;
 
             case shoot2:
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.4) {
+                //Use if grabbing pieces
+
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.2) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.3);
+                    follower.setMaxPower(0.25);
                 }
 
-                if (follower.getCurrentPath() == Path4 && !initVar) {
+                if (follower.getCurrentPath() == path4 && !initVar) {
                     initVar = true;
                     shooter.nextState(true);
                     shooter.setStopState(false);
                     follower.setMaxPower(1);
                 }
+
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
