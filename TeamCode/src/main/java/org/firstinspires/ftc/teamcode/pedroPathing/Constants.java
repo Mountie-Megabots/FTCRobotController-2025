@@ -39,7 +39,7 @@ public class Constants {
 
             //center
             public static Pose centerStart = new Pose(20.5, 123, Math.toRadians(145));
-            public static Pose centerEnd = new Pose(21, 122, Math.toRadians(145));
+            public static Pose centerEnd = new Pose(48, 95.5, Math.toRadians(145));
             public static BezierLine backupCenter = new BezierLine(centerStart, centerEnd);
 
 
