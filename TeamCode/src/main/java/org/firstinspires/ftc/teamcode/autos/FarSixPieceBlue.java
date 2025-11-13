@@ -37,13 +37,13 @@ public class FarSixPieceBlue extends OpMode {
         //insert bezier line or curve
         path1 = new Path(new BezierLine(Constants.paths.FarScoreConst.farStart, Constants.paths.FarScoreConst.farScore));
         //put in paths in chain
-        path1.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(112.5));
+        path1.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113));
         path2 = new Path(new BezierLine(Constants.paths.FarScoreConst.farScore, Constants.paths.GrabConst.PPGStart));
-        path2.setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(180));
+        path2.setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180));
         path3 = new Path(Constants.paths.GrabConst.PPG);
         path3.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
         path4 = new Path(new BezierLine(Constants.paths.GrabConst.PPG.getLastControlPoint(), Constants.paths.FarScoreConst.farScore));
-        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(112.5));
+        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(113));
         pickupChain = new PathChain(path2, path3, path4);
     }
 
@@ -57,7 +57,7 @@ public class FarSixPieceBlue extends OpMode {
             case shoot1:
                 //ready shooter
                 shooter.setShooterFast();
-                shooter.nextState(true);
+
                 if (!follower.isBusy()) {
                     //fire
                     shooter.nextState(true);
@@ -80,17 +80,19 @@ public class FarSixPieceBlue extends OpMode {
             case shoot2:
                 //Use if grabbing pieces
 
-                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.2) {
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.05) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
                     follower.setMaxPower(0.25);
                 }
 
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
+                    follower.setMaxPower(1);
+                }
+
                 if (follower.getCurrentPath() == path4 && !initVar) {
                     initVar = true;
-                    shooter.nextState(true);
                     shooter.setStopState(false);
-                    follower.setMaxPower(1);
                 }
 
 

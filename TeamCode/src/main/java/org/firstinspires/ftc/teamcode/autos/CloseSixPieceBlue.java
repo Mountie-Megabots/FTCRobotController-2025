@@ -58,7 +58,6 @@ public class CloseSixPieceBlue extends OpMode {
 
             case shoot1:
                 shooter.setShooterSlow();
-                shooter.nextState(true);
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
@@ -77,18 +76,20 @@ public class CloseSixPieceBlue extends OpMode {
 
             case shoot2:
                 //path 3 = pickup path
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.4) {
+                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
                     follower.setMaxPower(0.3);
                 }
 
+                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.85) {
+                    follower.setMaxPower(1);
+                }
+
                 //path 4 = path after path 3 - refer to path 3
                 if (follower.getCurrentPath() == Path4 && !initVar) {
                     initVar = true;
-                    shooter.nextState(true);
                     shooter.setStopState(false);
-                    follower.setMaxPower(0.1167);
                 }
 
                 if (!follower.isBusy()) {

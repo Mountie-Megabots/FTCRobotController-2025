@@ -18,7 +18,7 @@ public class ShooterSystem {
     private boolean stopState;
     ElapsedTime timer;
 
-    int slowShooterSpeedSet = 1850;
+    int slowShooterSpeedSet = 1825;
     int customShooterSpeedSet = 2400;
 
     int shooterSpeed = 0;
@@ -75,7 +75,7 @@ public class ShooterSystem {
     }
 
     public void functions() {
-        speedThreshold = shooterSpeed - 50;
+        speedThreshold = shooterSpeed - 25;
         switch (functionState) {
             case Nothing:
                 functionState = State.intake;
@@ -95,7 +95,7 @@ public class ShooterSystem {
             case retract:
                 intake.setPower(-1);
                 holder.setPower(-1);
-                if (timer.seconds() > 0.25) {
+                if (timer.seconds() > 0.45) {
                     functionState = State.spinup;
                     timer.reset();
                 }

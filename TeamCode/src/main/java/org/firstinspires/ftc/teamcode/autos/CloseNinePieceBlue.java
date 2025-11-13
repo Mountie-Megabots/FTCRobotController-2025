@@ -5,18 +5,20 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "CloseNinePieceBlue", group = "Unfinished")
+
+@Autonomous(name = "CloseNinePieceBlue", group = "UNFINSHED")
 public class CloseNinePieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path backupShoot, Path2, Path3, Path4, Path5, Path6, Path7;
-    public PathChain pickupGPP, pickupPGP;
+    private Path backupShoot, path2, path3, path4, path5, path6, path7;
+    private PathChain pickupChain, pickupChain2;
     ElapsedTime timer;
 
     boolean initVar = false;
@@ -25,6 +27,8 @@ public class CloseNinePieceBlue extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        toPickupTwo,
+        shoot3
     }
     private State pathState;
 
@@ -37,24 +41,27 @@ public class CloseNinePieceBlue extends OpMode {
         follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
 
         backupShoot = new Path(Constants.paths.CloseScoreConst.backupCenter);
-        backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(145));
+        backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(135));
 
-        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
-        Path2.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(180));
+        path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
+        path2.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
 
-        Path3 = new Path(Constants.paths.GrabConst.GPP);
-        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
-        Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(145));
+        path3 = new Path(Constants.paths.GrabConst.GPP);
 
-        pickupGPP = new PathChain(Path2, Path3, Path4);
+        path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
+        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
 
-        Path5 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart));
-        Path5.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(180));
+        pickupChain = new PathChain(path2, path3, path4);
 
-        Path6 = new Path(Constants.paths.GrabConst.PGP);
-        Path7 = new Path();
-        pickupPGP = new PathChain();
+        path5 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart));
+        path5.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
 
+        path6 = new Path(Constants.paths.GrabConst.PGP);
+
+        path7 = new Path(new BezierLine(Constants.paths.GrabConst.PGP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
+        path7.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
+
+        pickupChain2 = new PathChain(path5, path6, path7);
     }
 
     private void runPath() {
@@ -65,7 +72,7 @@ public class CloseNinePieceBlue extends OpMode {
                 break;
 
             case shoot1:
-                shooter.nextState(true);
+                shooter.setShooterSlow();
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
@@ -78,22 +85,60 @@ public class CloseNinePieceBlue extends OpMode {
                 break;
 
             case toPickup:
-                follower.followPath(pickupGPP);
+                follower.followPath(pickupChain);
                 pathState = State.shoot2;
                 break;
 
             case shoot2:
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.4) {
+                //path 3 = pickup path
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
                     follower.setMaxPower(0.3);
                 }
 
-                if (follower.getCurrentPath() == Path4 && !initVar) {
-                    initVar = true;
-                    shooter.nextState(true);
-                    shooter.setStopState(false);
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
                     follower.setMaxPower(1);
+                }
+
+                //path 4 = path after path 3 - refer to path 3
+                if (follower.getCurrentPath() == path4 && !initVar) {
+                    initVar = true;
+                    shooter.setStopState(false);
+                }
+
+                if (!follower.isBusy()) {
+                    shooter.nextState(true);
+                    if (timer.seconds() > 5) {
+                        shooter.setStopState(true);
+                        initVar = false;
+                        pathState = State.toPickupTwo;
+                    }
+                } else {
+                    timer.reset();
+                }
+
+            case toPickupTwo:
+                follower.followPath(pickupChain2);
+                pathState = State.shoot3;
+                break;
+
+            case shoot3:
+                //path 7 = pickup path
+                if (follower.getCurrentPath() == path6 && follower.getPathCompletion() > 0.1) {
+                    shooter.setStopState(true);
+                    shooter.nextState(false);
+                    follower.setMaxPower(0.3);
+                }
+
+                if (follower.getCurrentPath() == path6 && follower.getPathCompletion() > 0.85) {
+                    follower.setMaxPower(1);
+                }
+
+                //path 8 = path after path 7 - refer to path 7
+                if (follower.getCurrentPath() == path7 && !initVar) {
+                    initVar = true;
+                    shooter.setStopState(false);
                 }
 
                 if (!follower.isBusy()) {
