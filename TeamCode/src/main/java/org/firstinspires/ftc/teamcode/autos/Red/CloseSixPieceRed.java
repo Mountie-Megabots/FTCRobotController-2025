@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.Red;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "CloseSixPieceBlue", group = "Blue")
-public class CloseSixPieceBlue extends OpMode {
+public class CloseSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
     public Path backupShoot, Path2, Path3, Path4;
@@ -34,16 +34,16 @@ public class CloseSixPieceBlue extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart.mirror());
 
-        backupShoot = new Path(Constants.paths.CloseScoreConst.backupCenter);
+        backupShoot = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerStart.mirror(), Constants.paths.CloseScoreConst.centerEnd.mirror()));
         backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(135));
 
-        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
+        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd.mirror(), Constants.paths.GrabConst.GPPStart.mirror()));
         Path2.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
 
-        Path3 = new Path(Constants.paths.GrabConst.GPP);
-        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
+        Path3 = new Path(new BezierLine(Constants.paths.GrabConst.GPPStart.mirror(), Constants.paths.GrabConst.GPP.getLastControlPoint().mirror()));
+        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint().mirror(), Constants.paths.CloseScoreConst.centerEnd.mirror()));
         Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
 
         pickupChain = new PathChain(Path2, Path3, Path4);
@@ -58,6 +58,7 @@ public class CloseSixPieceBlue extends OpMode {
 
             case shoot1:
                 shooter.setShooterSlow();
+                shooter.nextState(true);
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
@@ -76,20 +77,18 @@ public class CloseSixPieceBlue extends OpMode {
 
             case shoot2:
                 //path 3 = pickup path
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.1) {
+                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.4) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
                     follower.setMaxPower(0.3);
                 }
 
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.85) {
-                    follower.setMaxPower(1);
-                }
-
                 //path 4 = path after path 3 - refer to path 3
                 if (follower.getCurrentPath() == Path4 && !initVar) {
                     initVar = true;
+                    shooter.nextState(true);
                     shooter.setStopState(false);
+                    follower.setMaxPower(0.1167);
                 }
 
                 if (!follower.isBusy()) {
