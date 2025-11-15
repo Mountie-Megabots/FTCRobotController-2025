@@ -1,12 +1,13 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.ScrappedAutos;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
 @Autonomous(name = "CloseThreePieceBlue", group = "Blue")
 public class CloseThreePieceBlue extends OpMode {
@@ -26,8 +27,7 @@ public class CloseThreePieceBlue extends OpMode {
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Constants.paths.CloseScoreConst.rightStart);
-        Path1 = new Path(Constants.paths.CloseScoreConst.backupRight);
-        Path1.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(155));
+        Path1 = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupRight);
 
 
     }

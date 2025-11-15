@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Red;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
-@Autonomous(name = "CloseSixPieceRed", group = "Blue")
+@Autonomous(name = "CloseSixPieceRed", group = "Red")
 public class CloseSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path backupShoot, Path2, Path3, Path4;
+    public Path backupShoot, path2, path3, path4;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -35,18 +35,20 @@ public class CloseSixPieceRed extends OpMode {
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart.mirror());
+        PedroHelper.onRedAlliance();
 
-        backupShoot = new Path(new BezierLine(Constants.paths.CloseScoreConst.backupCenter.getFirstControlPoint().mirror(), Constants.paths.CloseScoreConst.backupCenter.getLastControlPoint().mirror()));
-        backupShoot.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(40));
+        backupShoot = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupCenter.getFirstControlPoint(),
+                Constants.paths.CloseScoreConst.backupCenter.getLastControlPoint());
 
-        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd.mirror(), Constants.paths.GrabConst.GPPStart.mirror()));
-        Path2.setLinearHeadingInterpolation(Math.toRadians(40), Math.toRadians(0));
+        path2 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd,
+                Constants.paths.GrabConst.GPPStart);
 
-        Path3 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getFirstControlPoint().mirror(), Constants.paths.GrabConst.GPP.getLastControlPoint().mirror()));
-        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint().mirror(), Constants.paths.CloseScoreConst.centerEnd.mirror()));
-        Path4.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(40));
+        path3 = PedroHelper.runPath(Constants.paths.GrabConst.GPP);
 
-        pickupChain = new PathChain(Path2, Path3, Path4);
+        path4 = PedroHelper.runPath(Constants.paths.GrabConst.GPP.getLastControlPoint(),
+                Constants.paths.CloseScoreConst.centerEnd);
+
+        pickupChain = new PathChain(path2, path3, path4);
     }
 
     private void runPath() {
@@ -76,18 +78,18 @@ public class CloseSixPieceRed extends OpMode {
 
             case shoot2:
                 //path 3 = pickup path
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.1) {
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
                     follower.setMaxPower(0.3);
                 }
 
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.85) {
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
                     follower.setMaxPower(1);
                 }
 
                 //path 4 = path after path 3 - refer to path 3
-                if (follower.getCurrentPath() == Path4 && !initVar) {
+                if (follower.getCurrentPath() == path4 && !initVar) {
                     initVar = true;
                     shooter.setStopState(false);
                 }

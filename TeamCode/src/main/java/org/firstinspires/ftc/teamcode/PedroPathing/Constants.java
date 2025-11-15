@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.PedroPathing;
 
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
@@ -42,10 +42,9 @@ public class Constants {
 
             //center
             public static Pose centerStart = new Pose(20.5, 123, Math.toRadians(140));
-            public static Pose centerEnd = new Pose(48, 95.5, Math.toRadians(140));
+            public static Pose centerEnd = new Pose(48, 95.5, Math.toRadians(135));
             public static BezierLine backupCenter = new BezierLine(centerStart, centerEnd);
-
-
+            public static Pose launchLeave = new Pose(25, 95, Math.toRadians(180));
 
             public static Pose curveControlPoint = new Pose(95, 95.776);
         }

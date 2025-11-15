@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Red;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
 @Autonomous(name = "FarSixPieceRed", group = "Blue")
 public class FarSixPieceRed extends OpMode {
@@ -35,16 +35,21 @@ public class FarSixPieceRed extends OpMode {
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Constants.paths.FarScoreConst.farStart.mirror());
-        //insert bezier line or curve
-        path1 = new Path(new BezierLine(Constants.paths.FarScoreConst.farStart.mirror(), Constants.paths.FarScoreConst.farScore.mirror()));
+        PedroHelper.onRedAlliance();
+        //insert bezier line or 2 poses
+        path1 = PedroHelper.runPath(Constants.paths.FarScoreConst.farStart,
+                Constants.paths.FarScoreConst.farScore);
+
         //put in paths in chain
-        path1.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(75));
-        path2 = new Path(new BezierLine(Constants.paths.FarScoreConst.farScore.mirror(), Constants.paths.GrabConst.PPGStart.mirror()));
-        path2.setLinearHeadingInterpolation(Math.toRadians(75), Math.toRadians(0));
-        path3 = new Path(new BezierLine(Constants.paths.GrabConst.PPG.getFirstControlPoint().mirror(), Constants.paths.GrabConst.PPG.getLastControlPoint().mirror()));
-        path3.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0));
-        path4 = new Path(new BezierLine(Constants.paths.GrabConst.PPG.getLastControlPoint().mirror(), Constants.paths.FarScoreConst.farScore.mirror()));
-        path4.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(75));
+        path2 = PedroHelper.runPath(Constants.paths.FarScoreConst.farScore,
+                Constants.paths.GrabConst.PPGStart);
+
+        path3 = PedroHelper.runPath(Constants.paths.GrabConst.PPG.getFirstControlPoint(),
+                Constants.paths.GrabConst.PPG.getLastControlPoint());
+
+        path4 = PedroHelper.runPath(Constants.paths.GrabConst.PPG.getLastControlPoint(),
+                Constants.paths.FarScoreConst.farScore);
+
         pickupChain = new PathChain(path2, path3, path4);
     }
 

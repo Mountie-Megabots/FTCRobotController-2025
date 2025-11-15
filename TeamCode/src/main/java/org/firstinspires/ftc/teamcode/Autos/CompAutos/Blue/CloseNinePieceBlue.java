@@ -1,19 +1,19 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Blue;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
 
-@Autonomous(name = "CloseNinePieceBlue", group = "UNFINSHED")
+@Autonomous(name = "CloseNinePieceBlue", group = "Blue")
 public class CloseNinePieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
@@ -28,7 +28,8 @@ public class CloseNinePieceBlue extends OpMode {
         toPickup,
         shoot2,
         toPickupTwo,
-        shoot3
+        shoot3,
+        leave
     }
     private State pathState;
 
@@ -39,27 +40,23 @@ public class CloseNinePieceBlue extends OpMode {
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        PedroHelper.onBlueAlliance();
 
-        backupShoot = new Path(Constants.paths.CloseScoreConst.backupCenter);
-        backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(135));
+        backupShoot = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupCenter);
 
-        path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
-        path2.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
+        path2 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
 
-        path3 = new Path(Constants.paths.GrabConst.GPP);
+        path3 = PedroHelper.runPath(Constants.paths.GrabConst.GPP);
 
-        path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
-        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
+        path4 = PedroHelper.runPath(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
 
         pickupChain = new PathChain(path2, path3, path4);
 
-        path5 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart));
-        path5.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
+        path5 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart);
 
-        path6 = new Path(Constants.paths.GrabConst.PGP);
+        path6 = PedroHelper.runPath(Constants.paths.GrabConst.PGP);
 
-        path7 = new Path(new BezierLine(Constants.paths.GrabConst.PGP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
-        path7.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
+        path7 = PedroHelper.runPath(Constants.paths.GrabConst.PGP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
 
         pickupChain2 = new PathChain(path5, path6, path7);
     }
@@ -75,7 +72,7 @@ public class CloseNinePieceBlue extends OpMode {
                 shooter.setShooterSlow();
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         pathState = State.toPickup;
                     }
                 } else {
@@ -94,7 +91,7 @@ public class CloseNinePieceBlue extends OpMode {
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.3);
+                    follower.setMaxPower(1);
                 }
 
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
@@ -109,7 +106,7 @@ public class CloseNinePieceBlue extends OpMode {
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
                         initVar = false;
                         pathState = State.toPickupTwo;
@@ -117,6 +114,7 @@ public class CloseNinePieceBlue extends OpMode {
                 } else {
                     timer.reset();
                 }
+                break;
 
             case toPickupTwo:
                 follower.followPath(pickupChain2);
@@ -128,7 +126,7 @@ public class CloseNinePieceBlue extends OpMode {
                 if (follower.getCurrentPath() == path6 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.3);
+                    follower.setMaxPower(1);
                 }
 
                 if (follower.getCurrentPath() == path6 && follower.getPathCompletion() > 0.85) {
@@ -143,13 +141,19 @@ public class CloseNinePieceBlue extends OpMode {
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
+                        shooter.nextState(false);
                         initVar = false;
+                        pathState = State.leave;
                     }
                 } else {
                     timer.reset();
                 }
+                break;
+            case leave:
+                follower.followPath(new Path(new BezierLine(follower.getPose(), Constants.paths.CloseScoreConst.launchLeave)));
+                break;
 
         }
     }

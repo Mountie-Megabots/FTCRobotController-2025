@@ -95,7 +95,7 @@ public class ShooterSystem {
             case retract:
                 intake.setPower(-1);
                 holder.setPower(-1);
-                if (timer.seconds() > 0.45) {
+                if (timer.seconds() > 0.2) {
                     functionState = State.spinup;
                     timer.reset();
                 }

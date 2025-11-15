@@ -1,21 +1,22 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
-@Autonomous(name = "CloseSixPieceBlue", group = "Blue")
-public class CloseSixPieceBlue extends OpMode {
+@Disabled
+@Autonomous(name = "DONOTUSE", group = "DONTUSE")
+public class AutoTemplate extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path backupShoot, Path2, Path3, Path4;
+    public Path path1;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -35,30 +36,29 @@ public class CloseSixPieceBlue extends OpMode {
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        //Choose one
+        //PedroHelper.onBlueAlliance();
+        //PedroHelper.onRedAlliance();
 
-        backupShoot = new Path(Constants.paths.CloseScoreConst.backupCenter);
-        backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(135));
+        //insert bezier line or two poses
+        //path1 = PedroHelper.runPath();
 
-        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
-        Path2.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
-
-        Path3 = new Path(Constants.paths.GrabConst.GPP);
-        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
-        Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
-
-        pickupChain = new PathChain(Path2, Path3, Path4);
+        //put in paths in chain for pickup
+        pickupChain = new PathChain();
     }
 
     private void runPath() {
         switch (pathState) {
             case firstPath:
-                follower.followPath(backupShoot, true);
+                follower.followPath(path1, true);
                 pathState = State.shoot1;
                 break;
 
             case shoot1:
-                shooter.setShooterSlow();
+                //ready shooter
+                shooter.nextState(true);
                 if (!follower.isBusy()) {
+                    //fire
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
                         pathState = State.toPickup;
@@ -75,22 +75,21 @@ public class CloseSixPieceBlue extends OpMode {
                 break;
 
             case shoot2:
-                //path 3 = pickup path
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.1) {
+                //Use if grabbing pieces
+                /*
+                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.4) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
                     follower.setMaxPower(0.3);
                 }
 
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.85) {
+                if (follower.getCurrentPath() == Path4 && !initVar) {
+                    initVar = true;
+                    shooter.nextState(true);
+                    shooter.setStopState(false);
                     follower.setMaxPower(1);
                 }
 
-                //path 4 = path after path 3 - refer to path 3
-                if (follower.getCurrentPath() == Path4 && !initVar) {
-                    initVar = true;
-                    shooter.setStopState(false);
-                }
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
@@ -101,7 +100,7 @@ public class CloseSixPieceBlue extends OpMode {
                 } else {
                     timer.reset();
                 }
-
+                */
         }
     }
 

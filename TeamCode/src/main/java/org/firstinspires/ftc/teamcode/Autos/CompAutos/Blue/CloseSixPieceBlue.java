@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Blue;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -9,12 +8,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Autonomous(name = "FarSixPieceBlue", group = "Blue")
-public class FarSixPieceBlue extends OpMode {
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
+
+@Autonomous(name = "CloseSixPieceBlue", group = "Blue")
+public class CloseSixPieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path path1, path2, path3, path4;
+    public Path backupShoot, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -24,6 +25,7 @@ public class FarSixPieceBlue extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -33,38 +35,35 @@ public class FarSixPieceBlue extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.FarScoreConst.farStart);
-        //insert bezier line or curve
-        path1 = new Path(new BezierLine(Constants.paths.FarScoreConst.farStart, Constants.paths.FarScoreConst.farScore));
-        //put in paths in chain
-        path1.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113));
-        path2 = new Path(new BezierLine(Constants.paths.FarScoreConst.farScore, Constants.paths.GrabConst.PPGStart));
-        path2.setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180));
-        path3 = new Path(Constants.paths.GrabConst.PPG);
-        path3.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
-        path4 = new Path(new BezierLine(Constants.paths.GrabConst.PPG.getLastControlPoint(), Constants.paths.FarScoreConst.farScore));
-        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(113));
+        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        PedroHelper.onBlueAlliance();
+
+        backupShoot = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupCenter);
+
+        path2 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
+
+        path3 = PedroHelper.runPath(Constants.paths.GrabConst.GPP);
+
+        path4 = PedroHelper.runPath(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
+
         pickupChain = new PathChain(path2, path3, path4);
+
+        leave = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.CloseScoreConst.launchLeave);
     }
 
     private void runPath() {
         switch (pathState) {
             case firstPath:
-                follower.followPath(path1, true);
+                follower.followPath(backupShoot, true);
                 pathState = State.shoot1;
                 break;
 
             case shoot1:
-                //ready shooter
-                shooter.setShooterFast();
-
+                shooter.setShooterSlow();
                 if (!follower.isBusy()) {
-                    //fire
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
                         pathState = State.toPickup;
-                        shooter.setStopState(true);
-                        shooter.nextState(false);
                     }
                 } else {
                     timer.reset();
@@ -78,33 +77,38 @@ public class FarSixPieceBlue extends OpMode {
                 break;
 
             case shoot2:
-                //Use if grabbing pieces
-
-                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.05) {
+                //path 3 = pickup path
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.25);
+                    follower.setMaxPower(0.3);
                 }
 
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
                     follower.setMaxPower(1);
                 }
 
+                //path 4 = path after path 3 - refer to path 3
                 if (follower.getCurrentPath() == path4 && !initVar) {
                     initVar = true;
                     shooter.setStopState(false);
                 }
-
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
                     if (timer.seconds() > 5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
                     }
                 } else {
                     timer.reset();
                 }
+                break;
+
+            case leave:
+                follower.followPath(leave, false);
+                break;
 
         }
     }
