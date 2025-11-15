@@ -91,7 +91,7 @@ public class CloseNinePieceBlue extends OpMode {
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(1);
+                    follower.setMaxPower(0.8);
                 }
 
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
@@ -126,7 +126,7 @@ public class CloseNinePieceBlue extends OpMode {
                 if (follower.getCurrentPath() == path6 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(1);
+                    follower.setMaxPower(0.8);
                 }
 
                 if (follower.getCurrentPath() == path6 && follower.getPathCompletion() > 0.85) {

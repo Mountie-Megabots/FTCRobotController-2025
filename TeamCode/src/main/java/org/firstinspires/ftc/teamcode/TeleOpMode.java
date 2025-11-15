@@ -101,7 +101,6 @@ public class TeleOpMode extends OpMode {
             shooter.nextState(false);
         }
 
-        /*
         //increase or decrease the left trigger shoot speed
         if (gamepad1.dpadUpWasPressed()) {
             shooter.changeShooterSpeed(50);
@@ -110,7 +109,6 @@ public class TeleOpMode extends OpMode {
         if (gamepad1.dpadDownWasPressed()) {
             shooter.changeShooterSpeed(-50);
         }
-        */
 
         //if b is pressed then go into the stop path of the current state
         shooter.setStopState(gamepad1.b || gamepad2.b);

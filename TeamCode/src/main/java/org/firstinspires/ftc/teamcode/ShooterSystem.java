@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class ShooterSystem {
 
@@ -13,12 +14,12 @@ public class ShooterSystem {
     private final DcMotor holder;
     private final DcMotor intake;
 
-    private boolean nextState;
+    private boolean nextState, nextStatePrev;
 
     private boolean stopState;
     ElapsedTime timer;
 
-    int slowShooterSpeedSet = 1825;
+    int slowShooterSpeedSet = 1750 ;
     int customShooterSpeedSet = 2400;
 
     int shooterSpeed = 0;
@@ -62,11 +63,11 @@ public class ShooterSystem {
 
     //either set the speed of the shooter to shoot from afar or up close
     public void setShooterSlow() {
-        shooterSpeed = slowShooterSpeedSet;
+        if (functionState != State.armed) shooterSpeed = slowShooterSpeedSet;
     }
 
     public void setShooterFast() {
-        shooterSpeed = customShooterSpeedSet;
+        if (functionState != State.armed) shooterSpeed = customShooterSpeedSet;
     }
 
     //set the speed of all motors to backwards, and attempt to remove artifacts
@@ -75,13 +76,17 @@ public class ShooterSystem {
     }
 
     public void functions() {
-        speedThreshold = shooterSpeed - 25;
+        speedThreshold = shooterSpeed - 50;
         switch (functionState) {
             case Nothing:
                 functionState = State.intake;
                 break;
             case intake:
-                intake.setPower(1);
+                if (((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS) > 3000) {
+                    intake.setPower(0.1);
+                } else {
+                    intake.setPower(1);
+                }
                 shooter.setPower(-0.2);
                 holder.setPower(0);
                 //if right trigger pressed, begin retracting, otherwise stay intaking
@@ -95,7 +100,7 @@ public class ShooterSystem {
             case retract:
                 intake.setPower(-1);
                 holder.setPower(-1);
-                if (timer.seconds() > 0.2) {
+                if (timer.seconds() > 0.3) {
                     functionState = State.spinup;
                     timer.reset();
                 }
@@ -119,20 +124,30 @@ public class ShooterSystem {
                 intake.setPower(0);
                 holder.setPower(0);
                 //shoot button pressed, begin firing
-                if (nextState && shooterAtSpeed()) {
-                    intake.setPower(1);
+                if (shooterAtSpeed()) {
+                   timer.reset();
+                }
+                //use this if on slow speed
+                if (shooterSpeed == slowShooterSpeedSet &&
+                        nextState && (shooterAtSpeed() || timer.seconds() < 0.1)) {
+                    intake.setPower(0.75);
                     holder.setPower(1);
-                } else if (stopState) {
+                }
+                else if (shooterSpeed == customShooterSpeedSet &&
+                            nextState && shooterAtSpeed()) {
+                    intake.setPower(0.75);
+                    holder.setPower(1);
+                }
+                else if (stopState) {
                     //if stop, then return to intake from stop
                     functionState = State.stop;
-                } else {
-                    //nothing done
-                }
+                } else {}
+                nextStatePrev = nextState;
                 break;
             case removeBall:
                 //attempt to remove artifacts in the shooter system
                 intake.setPower(-1);
-                holder.setPower(-1);
+                holder.setPower(0);
                 shooter.setPower(-1);
             case stop:
                 //reset everything
@@ -156,5 +171,7 @@ public class ShooterSystem {
         telemetry.addData("Shooter State", functionState);
         telemetry.addData("Shooter Velocity", ((DcMotorEx) shooter).getVelocity());
         telemetry.addData("Shooter Custom Velocity Setting", customShooterSpeedSet);
+        telemetry.addData("Shooter At Speed", shooterAtSpeed());
+        telemetry.addData("Timer", timer.seconds());
     }
 }
