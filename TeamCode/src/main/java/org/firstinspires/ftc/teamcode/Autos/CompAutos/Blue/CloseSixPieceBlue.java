@@ -81,7 +81,7 @@ public class CloseSixPieceBlue extends OpMode {
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.3);
+                    follower.setMaxPower(0.8);
                 }
 
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {

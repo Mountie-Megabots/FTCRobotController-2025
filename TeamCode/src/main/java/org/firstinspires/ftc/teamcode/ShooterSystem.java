@@ -14,8 +14,9 @@ public class ShooterSystem {
     private final DcMotor holder;
     private final DcMotor intake;
 
-    private boolean nextState, initIntake;
+    private boolean nextState;
 
+    private boolean initIntake = false;
     private boolean stopState;
     ElapsedTime timer;
 
@@ -82,12 +83,7 @@ public class ShooterSystem {
                 functionState = State.intake;
                 break;
             case intake:
-                if (((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS) > 3000 || initIntake) {
-                    intake.setPower(0.1);
-                    initIntake = true;
-                } else {
-                    intake.setPower(1);
-                }
+                intake.setPower(1);
                 shooter.setPower(-0.2);
                 holder.setPower(0);
                 //if right trigger pressed, begin retracting, otherwise stay intaking
@@ -174,5 +170,6 @@ public class ShooterSystem {
         telemetry.addData("Shooter At Speed", shooterAtSpeed());
         telemetry.addData("Timer", timer.seconds());
         telemetry.addData("NextState", nextState);
+        telemetry.addData("Intake MilliAmps", ((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS));
     }
 }
