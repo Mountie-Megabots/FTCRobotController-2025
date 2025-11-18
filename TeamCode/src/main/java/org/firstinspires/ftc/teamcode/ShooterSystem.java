@@ -14,7 +14,7 @@ public class ShooterSystem {
     private final DcMotor holder;
     private final DcMotor intake;
 
-    private boolean nextState, nextStatePrev;
+    private boolean nextState, initIntake;
 
     private boolean stopState;
     ElapsedTime timer;
@@ -82,8 +82,9 @@ public class ShooterSystem {
                 functionState = State.intake;
                 break;
             case intake:
-                if (((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS) > 3000) {
+                if (((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS) > 3000 || initIntake) {
                     intake.setPower(0.1);
+                    initIntake = true;
                 } else {
                     intake.setPower(1);
                 }
@@ -94,6 +95,7 @@ public class ShooterSystem {
                     timer.reset();
                     functionState = State.retract;
                     nextState = false;
+                    initIntake = false;
                 }
                 break;
 
@@ -123,7 +125,6 @@ public class ShooterSystem {
             case armed:
                 intake.setPower(0);
                 holder.setPower(0);
-                //shoot button pressed, begin firing
                 if (shooterAtSpeed()) {
                    timer.reset();
                 }
@@ -142,7 +143,6 @@ public class ShooterSystem {
                     //if stop, then return to intake from stop
                     functionState = State.stop;
                 } else {}
-                nextStatePrev = nextState;
                 break;
             case removeBall:
                 //attempt to remove artifacts in the shooter system
@@ -173,5 +173,6 @@ public class ShooterSystem {
         telemetry.addData("Shooter Custom Velocity Setting", customShooterSpeedSet);
         telemetry.addData("Shooter At Speed", shooterAtSpeed());
         telemetry.addData("Timer", timer.seconds());
+        telemetry.addData("NextState", nextState);
     }
 }

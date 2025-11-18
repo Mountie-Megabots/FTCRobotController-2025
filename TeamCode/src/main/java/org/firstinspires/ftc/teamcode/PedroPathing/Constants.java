@@ -16,8 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
 
-    public static final class paths {
-        public static int farShotHeading = -20;
+    public static final class Paths {
         public static final class GrabConst {
             public static Pose GPPStart = new Pose(52.000, 84.000, Math.toRadians(180));
             public static BezierLine GPP = new BezierLine(new Pose(52.000, 84.000, Math.toRadians(180)), new Pose(17.5, 84.000, Math.toRadians(180)));
@@ -82,9 +81,6 @@ public class Constants {
 
 
     public static ThreeWheelConstants localizerConstants = new ThreeWheelConstants()
-//            .forwardTicksToInches(.001989436789)
-//            .strafeTicksToInches(.001989436789)
-//            .turnTicksToInches(.001989436789)
             .leftPodY(4.0625)
             .rightPodY(-4.0625)
             .strafePodX(-5.125)

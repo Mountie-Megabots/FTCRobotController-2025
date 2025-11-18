@@ -34,21 +34,21 @@ public class FarSixPieceRed extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.FarScoreConst.farStart.mirror());
+        follower.setStartingPose(Constants.Paths.FarScoreConst.farStart.mirror());
         PedroHelper.onRedAlliance();
         //insert bezier line or 2 poses
-        path1 = PedroHelper.createLine(Constants.paths.FarScoreConst.farStart,
-                Constants.paths.FarScoreConst.farScore);
+        path1 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farStart,
+                Constants.Paths.FarScoreConst.farScore);
 
         //put in paths in chain
-        path2 = PedroHelper.createLine(Constants.paths.FarScoreConst.farScore,
-                Constants.paths.GrabConst.PPGStart);
+        path2 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore,
+                Constants.Paths.GrabConst.PPGStart);
 
-        path3 = PedroHelper.createLine(Constants.paths.GrabConst.PPG.getFirstControlPoint(),
-                Constants.paths.GrabConst.PPG.getLastControlPoint());
+        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG.getFirstControlPoint(),
+                Constants.Paths.GrabConst.PPG.getLastControlPoint());
 
-        path4 = PedroHelper.createLine(Constants.paths.GrabConst.PPG.getLastControlPoint(),
-                Constants.paths.FarScoreConst.farScore);
+        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG.getLastControlPoint(),
+                Constants.Paths.FarScoreConst.farScore);
 
         pickupChain = new PathChain(path2, path3, path4);
     }

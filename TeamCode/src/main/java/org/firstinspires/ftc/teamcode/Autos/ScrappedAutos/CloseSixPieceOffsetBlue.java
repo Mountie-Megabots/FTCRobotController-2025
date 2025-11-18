@@ -40,21 +40,21 @@ public class CloseSixPieceOffsetBlue extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.rightStart);
+        follower.setStartingPose(Constants.Paths.CloseScoreConst.rightStart);
 
-        Path1 = new Path(Constants.paths.CloseScoreConst.backupRight);
+        Path1 = new Path(Constants.Paths.CloseScoreConst.backupRight);
         Path1.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(155));
 
-        Path2 = new Path(new BezierCurve(Constants.paths.CloseScoreConst.backupRightEnd, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.GrabConst.GPPStart));
+        Path2 = new Path(new BezierCurve(Constants.Paths.CloseScoreConst.backupRightEnd, Constants.Paths.CloseScoreConst.curveControlPoint, Constants.Paths.GrabConst.GPPStart));
         Path2.setLinearHeadingInterpolation(Math.toRadians(155), Math.toRadians(180));
 
-        Path3 = new Path(Constants.paths.GrabConst.GPP);
+        Path3 = new Path(Constants.Paths.GrabConst.GPP);
         Path3.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
 
-        Path4 = new Path(Constants.paths.GrabConst.GPPRev);
+        Path4 = new Path(Constants.Paths.GrabConst.GPPRev);
         Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
 
-        Path5 = new Path(new BezierCurve(Constants.paths.GrabConst.GPPStart, Constants.paths.CloseScoreConst.curveControlPoint, Constants.paths.CloseScoreConst.backupRightEnd));
+        Path5 = new Path(new BezierCurve(Constants.Paths.GrabConst.GPPStart, Constants.Paths.CloseScoreConst.curveControlPoint, Constants.Paths.CloseScoreConst.backupRightEnd));
         Path5.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(155));
     }
 

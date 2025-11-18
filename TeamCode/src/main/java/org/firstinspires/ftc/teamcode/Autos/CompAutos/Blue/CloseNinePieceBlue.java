@@ -39,24 +39,24 @@ public class CloseNinePieceBlue extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        follower.setStartingPose(Constants.Paths.CloseScoreConst.centerStart);
         PedroHelper.onBlueAlliance();
 
-        backupShoot = PedroHelper.createLine(Constants.paths.CloseScoreConst.backupCenter);
+        backupShoot = PedroHelper.createLine(Constants.Paths.CloseScoreConst.backupCenter);
 
-        path2 = PedroHelper.createLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
+        path2 = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.GrabConst.GPPStart);
 
-        path3 = PedroHelper.createLine(Constants.paths.GrabConst.GPP);
+        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.GPP);
 
-        path4 = PedroHelper.createLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
+        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.GPP.getLastControlPoint(), Constants.Paths.CloseScoreConst.centerEnd);
 
         pickupChain = new PathChain(path2, path3, path4);
 
-        path5 = PedroHelper.createLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart);
+        path5 = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.GrabConst.PGPStart);
 
-        path6 = PedroHelper.createLine(Constants.paths.GrabConst.PGP);
+        path6 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP);
 
-        path7 = PedroHelper.createLine(Constants.paths.GrabConst.PGP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
+        path7 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP.getLastControlPoint(), Constants.Paths.CloseScoreConst.centerEnd);
 
         pickupChain2 = new PathChain(path5, path6, path7);
     }
@@ -152,7 +152,7 @@ public class CloseNinePieceBlue extends OpMode {
                 }
                 break;
             case leave:
-                follower.followPath(new Path(new BezierLine(follower.getPose(), Constants.paths.CloseScoreConst.launchLeave)));
+                follower.followPath(new Path(new BezierLine(follower.getPose(), Constants.Paths.CloseScoreConst.launchLeave)));
                 break;
 
         }

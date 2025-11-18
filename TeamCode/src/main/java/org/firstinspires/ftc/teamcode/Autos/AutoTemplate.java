@@ -35,7 +35,7 @@ public class AutoTemplate extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        follower.setStartingPose(Constants.Paths.CloseScoreConst.centerStart);
         //Choose one
         //PedroHelper.onBlueAlliance();
         //PedroHelper.onRedAlliance();
