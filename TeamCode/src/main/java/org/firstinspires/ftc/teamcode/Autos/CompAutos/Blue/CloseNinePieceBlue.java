@@ -42,21 +42,21 @@ public class CloseNinePieceBlue extends OpMode {
         follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
         PedroHelper.onBlueAlliance();
 
-        backupShoot = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupCenter);
+        backupShoot = PedroHelper.createLine(Constants.paths.CloseScoreConst.backupCenter);
 
-        path2 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
+        path2 = PedroHelper.createLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
 
-        path3 = PedroHelper.runPath(Constants.paths.GrabConst.GPP);
+        path3 = PedroHelper.createLine(Constants.paths.GrabConst.GPP);
 
-        path4 = PedroHelper.runPath(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
+        path4 = PedroHelper.createLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
 
         pickupChain = new PathChain(path2, path3, path4);
 
-        path5 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart);
+        path5 = PedroHelper.createLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.PGPStart);
 
-        path6 = PedroHelper.runPath(Constants.paths.GrabConst.PGP);
+        path6 = PedroHelper.createLine(Constants.paths.GrabConst.PGP);
 
-        path7 = PedroHelper.runPath(Constants.paths.GrabConst.PGP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
+        path7 = PedroHelper.createLine(Constants.paths.GrabConst.PGP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
 
         pickupChain2 = new PathChain(path5, path6, path7);
     }

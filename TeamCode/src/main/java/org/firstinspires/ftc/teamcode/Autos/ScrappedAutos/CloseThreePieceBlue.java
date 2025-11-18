@@ -27,7 +27,7 @@ public class CloseThreePieceBlue extends OpMode {
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Constants.paths.CloseScoreConst.rightStart);
-        Path1 = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupRight);
+        Path1 = PedroHelper.createLine(Constants.paths.CloseScoreConst.backupRight);
 
 
     }

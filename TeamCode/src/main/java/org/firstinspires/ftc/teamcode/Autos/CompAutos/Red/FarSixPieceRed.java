@@ -37,17 +37,17 @@ public class FarSixPieceRed extends OpMode {
         follower.setStartingPose(Constants.paths.FarScoreConst.farStart.mirror());
         PedroHelper.onRedAlliance();
         //insert bezier line or 2 poses
-        path1 = PedroHelper.runPath(Constants.paths.FarScoreConst.farStart,
+        path1 = PedroHelper.createLine(Constants.paths.FarScoreConst.farStart,
                 Constants.paths.FarScoreConst.farScore);
 
         //put in paths in chain
-        path2 = PedroHelper.runPath(Constants.paths.FarScoreConst.farScore,
+        path2 = PedroHelper.createLine(Constants.paths.FarScoreConst.farScore,
                 Constants.paths.GrabConst.PPGStart);
 
-        path3 = PedroHelper.runPath(Constants.paths.GrabConst.PPG.getFirstControlPoint(),
+        path3 = PedroHelper.createLine(Constants.paths.GrabConst.PPG.getFirstControlPoint(),
                 Constants.paths.GrabConst.PPG.getLastControlPoint());
 
-        path4 = PedroHelper.runPath(Constants.paths.GrabConst.PPG.getLastControlPoint(),
+        path4 = PedroHelper.createLine(Constants.paths.GrabConst.PPG.getLastControlPoint(),
                 Constants.paths.FarScoreConst.farScore);
 
         pickupChain = new PathChain(path2, path3, path4);

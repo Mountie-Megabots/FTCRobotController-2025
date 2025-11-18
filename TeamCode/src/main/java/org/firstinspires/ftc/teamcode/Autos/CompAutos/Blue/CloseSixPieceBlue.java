@@ -38,17 +38,17 @@ public class CloseSixPieceBlue extends OpMode {
         follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
         PedroHelper.onBlueAlliance();
 
-        backupShoot = PedroHelper.runPath(Constants.paths.CloseScoreConst.backupCenter);
+        backupShoot = PedroHelper.createLine(Constants.paths.CloseScoreConst.backupCenter);
 
-        path2 = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
+        path2 = PedroHelper.createLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart);
 
-        path3 = PedroHelper.runPath(Constants.paths.GrabConst.GPP);
+        path3 = PedroHelper.createLine(Constants.paths.GrabConst.GPP);
 
-        path4 = PedroHelper.runPath(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
+        path4 = PedroHelper.createLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd);
 
         pickupChain = new PathChain(path2, path3, path4);
 
-        leave = PedroHelper.runPath(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.CloseScoreConst.launchLeave);
+        leave = PedroHelper.createLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.CloseScoreConst.launchLeave);
     }
 
     private void runPath() {
