@@ -100,6 +100,7 @@ public class CloseSixPieceBlue extends OpMode {
                         shooter.setStopState(true);
                         initVar = false;
                         pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
@@ -107,7 +108,6 @@ public class CloseSixPieceBlue extends OpMode {
                 break;
 
             case leave:
-                follower.followPath(leave, false);
                 break;
 
         }

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 public class FarSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path path1, path2, path3, path4;
+    public Path path1, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -25,6 +25,7 @@ public class FarSixPieceRed extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -51,6 +52,7 @@ public class FarSixPieceRed extends OpMode {
                 Constants.Paths.FarScoreConst.farScore);
 
         pickupChain = new PathChain(path2, path3, path4);
+        leave = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore, Constants.Paths.FarScoreConst.leave);
     }
 
     private void runPath() {
@@ -58,12 +60,10 @@ public class FarSixPieceRed extends OpMode {
             case firstPath:
                 follower.followPath(path1, true);
                 pathState = State.shoot1;
+                shooter.setShooterFast();
                 break;
-
             case shoot1:
                 //ready shooter
-                shooter.setShooterFast();
-
                 if (!follower.isBusy()) {
                     //fire
                     shooter.nextState(true);
@@ -72,10 +72,10 @@ public class FarSixPieceRed extends OpMode {
                         shooter.setStopState(true);
                         shooter.nextState(false);
                     }
-                } else {
-                    timer.reset();
-                }
 
+                } else {
+                    timer.reset(); 
+                }
                 break;
 
             case toPickup:
@@ -107,10 +107,15 @@ public class FarSixPieceRed extends OpMode {
                     if (timer.seconds() > 5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
+                break;
+            case leave:
+                break;
 
         }
     }

@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
-import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.ShooterSystem;
 
 @Autonomous(name = "CloseSixPieceRed", group = "Red")
 public class CloseSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path backupShoot, path2, path3, path4;
+    public Path backupShoot, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -25,6 +25,7 @@ public class CloseSixPieceRed extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -49,6 +50,8 @@ public class CloseSixPieceRed extends OpMode {
                 Constants.Paths.CloseScoreConst.centerEnd);
 
         pickupChain = new PathChain(path2, path3, path4);
+
+        leave = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.CloseScoreConst.launchLeave);
     }
 
     private void runPath() {
@@ -99,10 +102,16 @@ public class CloseSixPieceRed extends OpMode {
                     if (timer.seconds() > 5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
+                break;
+            case leave:
+
+                break;
 
         }
     }

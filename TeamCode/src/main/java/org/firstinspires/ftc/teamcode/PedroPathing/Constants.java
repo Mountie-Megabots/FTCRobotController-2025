@@ -28,6 +28,7 @@ public class Constants {
             //degrees for all: 180
         }
         public static final class FarScoreConst {
+            public static Pose leave = new Pose(55,36, Math.toRadians(90));
             public static Pose farStart = new Pose(56.299065420560744, 8.074766355140188,Math.toRadians(90));
             public static Pose farScore = new Pose (60.5607476635514, 12.785046728971956, Math.toRadians(113));
         }

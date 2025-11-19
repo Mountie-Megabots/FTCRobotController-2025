@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 public class FarSixPieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path path1, path2, path3, path4;
+    public Path path1, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -24,6 +24,7 @@ public class FarSixPieceBlue extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -48,6 +49,8 @@ public class FarSixPieceBlue extends OpMode {
                 Constants.Paths.FarScoreConst.farScore);
 
         pickupChain = new PathChain(path2, path3, path4);
+
+        leave = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore, Constants.Paths.FarScoreConst.leave);
     }
 
     private void runPath() {
@@ -104,11 +107,17 @@ public class FarSixPieceBlue extends OpMode {
                     if (timer.seconds() > 5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
+                break;
 
+            case leave:
+
+                break;
         }
     }
 

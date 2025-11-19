@@ -15,8 +15,9 @@ public class ShooterSystem {
     private final DcMotor intake;
 
     private boolean nextState;
-
     private boolean initIntake = false;
+    private boolean initVar = false;
+
     private boolean stopState;
     ElapsedTime timer;
 
@@ -170,6 +171,7 @@ public class ShooterSystem {
         telemetry.addData("Shooter At Speed", shooterAtSpeed());
         telemetry.addData("Timer", timer.seconds());
         telemetry.addData("NextState", nextState);
-        telemetry.addData("Intake MilliAmps", ((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("Intake MilliAmps",((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("initIntake", initIntake);
     }
 }

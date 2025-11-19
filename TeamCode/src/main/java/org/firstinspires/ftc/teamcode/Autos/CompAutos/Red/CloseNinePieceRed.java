@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.ShooterSystem;
 public class CloseNinePieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    private Path backupShoot, path2, path3, path4, path5, path6, path7;
+    private Path backupShoot, path2, path3, path4, path5, path6, path7, leave;
     private PathChain pickupChain, pickupChain2;
     ElapsedTime timer;
 
@@ -39,7 +39,7 @@ public class CloseNinePieceRed extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.Paths.CloseScoreConst.centerStart);
+        follower.setStartingPose(Constants.Paths.CloseScoreConst.centerStart.mirror());
         PedroHelper.onRedAlliance();
 
         backupShoot = PedroHelper.createLine(Constants.Paths.CloseScoreConst.backupCenter);
@@ -59,6 +59,8 @@ public class CloseNinePieceRed extends OpMode {
         path7 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP.getLastControlPoint(), Constants.Paths.CloseScoreConst.centerEnd);
 
         pickupChain2 = new PathChain(path5, path6, path7);
+
+        leave = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.CloseScoreConst.launchLeave);
     }
 
     private void runPath() {
@@ -146,13 +148,13 @@ public class CloseNinePieceRed extends OpMode {
                         shooter.nextState(false);
                         initVar = false;
                         pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
                 break;
             case leave:
-                follower.followPath(new Path(new BezierLine(follower.getPose(), Constants.Paths.CloseScoreConst.launchLeave)));
                 break;
 
         }

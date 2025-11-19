@@ -8,16 +8,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
-import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
 
 @Autonomous(name = "CloseNinePieceBlue", group = "Blue")
 public class CloseNinePieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    private Path backupShoot, path2, path3, path4, path5, path6, path7;
+    private Path backupShoot, path2, path3, path4, path5, path6, path7, leave;
     private PathChain pickupChain, pickupChain2;
     ElapsedTime timer;
 
@@ -59,7 +59,9 @@ public class CloseNinePieceBlue extends OpMode {
         path7 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP.getLastControlPoint(), Constants.Paths.CloseScoreConst.centerEnd);
 
         pickupChain2 = new PathChain(path5, path6, path7);
+        leave = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.CloseScoreConst.launchLeave);
     }
+
 
     private void runPath() {
         switch (pathState) {
@@ -146,13 +148,13 @@ public class CloseNinePieceBlue extends OpMode {
                         shooter.nextState(false);
                         initVar = false;
                         pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
                 break;
             case leave:
-                follower.followPath(new Path(new BezierLine(follower.getPose(), Constants.Paths.CloseScoreConst.launchLeave)));
                 break;
 
         }
