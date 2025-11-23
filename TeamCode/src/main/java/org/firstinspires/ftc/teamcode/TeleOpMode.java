@@ -69,6 +69,8 @@ public class TeleOpMode extends OpMode {
             follower.followPath(pathToPose.get());
         }
 
+        shooter.runLifter(gamepad2.left_stick_y);
+
         //if automated drive finishes or the joystick is moved then cancel and begin teleop drive
         if (automatedDrive && (joystickMoved() || !follower.isBusy())) {
             follower.startTeleopDrive(true);

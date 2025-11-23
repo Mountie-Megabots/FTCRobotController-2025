@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.Autos.CompAutos.Red;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Blue;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,11 +12,11 @@ import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 
 
-@Autonomous(name = "CloseNinePieceRed", group = "Red")
-public class CloseNinePieceRed extends OpMode {
+@Autonomous(name = "FarNinePieceBlue", group = "Blue")
+public class FarNinePieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    private Path backupShoot, path2, path3, path4, path5, path6, path7, leave;
+    private Path path1, path2, path3, path4, path5, path6, path7, leave;
     private PathChain pickupChain, pickupChain2;
     ElapsedTime timer;
 
@@ -39,39 +38,42 @@ public class CloseNinePieceRed extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.Paths.CloseScoreConst.centerStart.mirror());
-        PedroHelper.onRedAlliance();
+        follower.setStartingPose(Constants.Paths.FarScoreConst.farStart);
+        PedroHelper.onBlueAlliance();
 
-        backupShoot = PedroHelper.createLine(Constants.Paths.CloseScoreConst.backupCenter);
+        path1 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farStart,
+                Constants.Paths.FarScoreConst.farScore);
+        //put in paths in chain
+        path2 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore,
+                Constants.Paths.GrabConst.PPGStart);
 
-        path2 = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.GrabConst.GPPStart);
+        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG);
 
-        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.GPP);
-
-        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.GPP.getLastControlPoint(), Constants.Paths.CloseScoreConst.centerEnd);
+        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG.getLastControlPoint(),
+                Constants.Paths.FarScoreConst.farScore);
 
         pickupChain = new PathChain(path2, path3, path4);
 
-        path5 = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.GrabConst.PGPStart);
+        path5 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore, Constants.Paths.GrabConst.PGPStart);
 
         path6 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP);
 
-        path7 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP.getLastControlPoint(), Constants.Paths.CloseScoreConst.centerEnd);
+        path7 = PedroHelper.createLine(Constants.Paths.GrabConst.PGP.getLastControlPoint(), Constants.Paths.FarScoreConst.farScore);
 
         pickupChain2 = new PathChain(path5, path6, path7);
-
-        leave = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.CloseScoreConst.launchLeave);
+        leave = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore, Constants.Paths.FarScoreConst.leave);
     }
+
 
     private void runPath() {
         switch (pathState) {
             case firstPath:
-                follower.followPath(backupShoot, true);
+                follower.followPath(path1, true);
                 pathState = State.shoot1;
                 break;
 
             case shoot1:
-                shooter.setShooterSlow();
+                shooter.setShooterFast();
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
                     if (timer.seconds() > 4.5) {

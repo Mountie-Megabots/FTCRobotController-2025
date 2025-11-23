@@ -18,13 +18,13 @@ public class Constants {
 
     public static final class Paths {
         public static final class GrabConst {
-            public static Pose GPPStart = new Pose(52.000, 84.000, Math.toRadians(180));
-            public static BezierLine GPP = new BezierLine(new Pose(52.000, 84.000, Math.toRadians(180)), new Pose(17.5, 84.000, Math.toRadians(180)));
+            public static Pose GPPStart = new Pose(48.000, 84.000, Math.toRadians(180));
+            public static BezierLine GPP = new BezierLine(new Pose(48.000, 84.000, Math.toRadians(180)), new Pose(23.5, 84.000, Math.toRadians(180)));
             public static BezierLine GPPRev = new BezierLine(new Pose(17.5000, 84.000, Math.toRadians(180)), new Pose(52.000, 84.000, Math.toRadians(180)));
             public static Pose PGPStart = new Pose(48.000, 60.000, Math.toRadians(180));
-            public static BezierLine PGP = new BezierLine(new Pose(48.000, 60.000, Math.toRadians(180)), new Pose(17.500, 60.000, Math.toRadians(180)));
+            public static BezierLine PGP = new BezierLine(new Pose(48.000, 60.000, Math.toRadians(180)), new Pose(23.5, 60.000, Math.toRadians(180)));
             public static Pose PPGStart = new Pose(48.000, 36.000, Math.toRadians(180));
-            public static BezierLine PPG = new BezierLine(new Pose(48.000, 36.000, Math.toRadians(180)), new Pose(17.500, 36.000, Math.toRadians(180)));
+            public static BezierLine PPG = new BezierLine(new Pose(48.000, 36.000, Math.toRadians(180)), new Pose(23.500, 36.000, Math.toRadians(180)));
             //degrees for all: 180
         }
         public static final class FarScoreConst {

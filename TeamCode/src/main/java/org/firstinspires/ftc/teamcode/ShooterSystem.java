@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.tree.DCTree;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -13,7 +14,7 @@ public class ShooterSystem {
     private final DcMotor shooter;
     private final DcMotor holder;
     private final DcMotor intake;
-
+    private final DcMotor lifter;
     private boolean nextState;
     private boolean initIntake = false;
     private boolean initVar = false;
@@ -22,7 +23,7 @@ public class ShooterSystem {
     ElapsedTime timer;
 
     int slowShooterSpeedSet = 1750 ;
-    int customShooterSpeedSet = 2400;
+    int customShooterSpeedSet = 2350;
 
     int shooterSpeed = 0;
 
@@ -44,9 +45,15 @@ public class ShooterSystem {
         shooter = hm.get(DcMotor.class, "shooter");
         holder = hm.get(DcMotor.class, "holder");
         intake = hm.get(DcMotor.class, "intake");
+        lifter = hm.get(DcMotor.class, "lifter");
+        lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        holder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        holder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         functionState = State.Nothing;
         timer = new ElapsedTime();
-
+        ((DcMotorEx) intake).setCurrentAlert(3000, CurrentUnit.MILLIAMPS);
+        ((DcMotorEx) shooter).setCurrentAlert(1300, CurrentUnit.MILLIAMPS);
     }
 
     //if the passed true, then move to the next state or part of state
@@ -68,6 +75,10 @@ public class ShooterSystem {
         if (functionState != State.armed) shooterSpeed = slowShooterSpeedSet;
     }
 
+    public void runLifter(double value) {
+        lifter.setPower(value);
+    }
+
     public void setShooterFast() {
         if (functionState != State.armed) shooterSpeed = customShooterSpeedSet;
     }
@@ -84,11 +95,25 @@ public class ShooterSystem {
                 functionState = State.intake;
                 break;
             case intake:
-                intake.setPower(1);
+                holder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 shooter.setPower(-0.2);
-                holder.setPower(0);
+                if (((DcMotorEx) shooter).isOverCurrent()) {
+                    holder.setPower(-0.25);
+                } else {
+                    holder.setPower(0.125);
+                }
+                if (!((DcMotorEx) intake).isOverCurrent()) {
+                    timer.reset();
+                }
+                if (((((DcMotorEx) intake).isOverCurrent()  && timer.seconds() > 1) || initIntake) && ((DcMotorEx) shooter).isOverCurrent()) {
+                    intake.setPower(0);
+                    initIntake = true;
+                } else {
+                    intake.setPower(1);
+                }
                 //if right trigger pressed, begin retracting, otherwise stay intaking
                 if ((nextState)) {
+                    holder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     timer.reset();
                     functionState = State.retract;
                     nextState = false;
@@ -97,11 +122,12 @@ public class ShooterSystem {
                 break;
 
             case retract:
-                intake.setPower(-1);
+                intake.setPower(-0.75);
                 holder.setPower(-1);
                 if (timer.seconds() > 0.3) {
                     functionState = State.spinup;
                     timer.reset();
+                    ((DcMotorEx) shooter).setVelocity(shooterSpeed);
                 }
                 //if the intake has passed the distance needed for retracting
                 //begin spinning up the shooter otherwise keep moving to position
@@ -109,10 +135,8 @@ public class ShooterSystem {
             case spinup:
                 intake.setPower(0);
                 holder.setPower(0);
-                ((DcMotorEx) shooter).setVelocity(shooterSpeed);
                 //if the shooter has reached the desired speed, set state to armed and hold velocity
                 //otherwise, keep attempting to reach velocity or stop when the timer reaches two seconds/stop is pressed
-
                 functionState = (shooterAtSpeed() || timer.seconds() > 2) ? State.armed : State.spinup;
                 if (stopState) {
                     stopState = false;
@@ -143,7 +167,7 @@ public class ShooterSystem {
                 break;
             case removeBall:
                 //attempt to remove artifacts in the shooter system
-                intake.setPower(-1);
+                intake.setPower(1);
                 holder.setPower(0);
                 shooter.setPower(-1);
             case stop:
@@ -167,11 +191,13 @@ public class ShooterSystem {
     public void pushTelemetry(Telemetry telemetry) {
         telemetry.addData("Shooter State", functionState);
         telemetry.addData("Shooter Velocity", ((DcMotorEx) shooter).getVelocity());
-        telemetry.addData("Shooter Custom Velocity Setting", customShooterSpeedSet);
-        telemetry.addData("Shooter At Speed", shooterAtSpeed());
-        telemetry.addData("Timer", timer.seconds());
-        telemetry.addData("NextState", nextState);
-        telemetry.addData("Intake MilliAmps",((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS));
+        //telemetry.addData("Shooter Custom Velocity Setting", customShooterSpeedSet);
+        //telemetry.addData("Shooter At Speed", shooterAtSpeed());
+        //telemetry.addData("Timer", timer.seconds());
+        //telemetry.addData("NextState", nextState);
+        //telemetry.addData("Intake MilliAmps",((DcMotorEx) intake).getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("initIntake", initIntake);
+        telemetry.addData("Lifter Position", lifter.getCurrentPosition());
+        telemetry.addData("Shooter Current", ((DcMotorEx) shooter).getCurrent(CurrentUnit.MILLIAMPS));
     }
 }

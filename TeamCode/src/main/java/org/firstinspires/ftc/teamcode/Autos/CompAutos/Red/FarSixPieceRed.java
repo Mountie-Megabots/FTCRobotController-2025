@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
 import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
-@Autonomous(name = "FarSixPieceRed", group = "Blue")
+@Autonomous(name = "FarSixPieceRed", group = "Red")
 public class FarSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
@@ -67,7 +67,7 @@ public class FarSixPieceRed extends OpMode {
                 if (!follower.isBusy()) {
                     //fire
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         pathState = State.toPickup;
                         shooter.setStopState(true);
                         shooter.nextState(false);
@@ -89,7 +89,7 @@ public class FarSixPieceRed extends OpMode {
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.05) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.8);
+                    follower.setMaxPower(0.25);
                 }
 
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
@@ -104,7 +104,7 @@ public class FarSixPieceRed extends OpMode {
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
                         initVar = false;
                         pathState = State.leave;

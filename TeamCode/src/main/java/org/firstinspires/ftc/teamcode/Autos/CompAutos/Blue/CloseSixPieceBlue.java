@@ -62,7 +62,7 @@ public class CloseSixPieceBlue extends OpMode {
                 shooter.setShooterSlow();
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         pathState = State.toPickup;
                     }
                 } else {
@@ -81,7 +81,7 @@ public class CloseSixPieceBlue extends OpMode {
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.8);
+                    follower.setMaxPower(0.25);
                 }
 
                 if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
@@ -96,7 +96,7 @@ public class CloseSixPieceBlue extends OpMode {
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
                         initVar = false;
                         pathState = State.leave;
