@@ -105,7 +105,7 @@ public class ShooterSystem {
                 holder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 shooter.setPower(-0.2);
                 if (((DcMotorEx) shooter).isOverCurrent()) {
-                    holder.setPower(-0.25);
+                    holder.setPower(-0.35);
                 } else {
                     holder.setPower(0.125);
                 }
@@ -118,7 +118,7 @@ public class ShooterSystem {
                     initIntake = true;
                 } else {
                     intake.setPower(1);
-                    setLight(0.28);
+                    setLight(0.33);
                 }
                 //if right trigger pressed, begin retracting, otherwise stay intaking
                 if ((nextState)) {
@@ -131,7 +131,7 @@ public class ShooterSystem {
                 break;
 
             case retract:
-                setLight(0.33);
+                setLight(0.28);
                 intake.setPower(-0.75);
                 holder.setPower(-1);
                 if (timer.seconds() > 0.3) {
@@ -143,7 +143,7 @@ public class ShooterSystem {
                 //begin spinning up the shooter otherwise keep moving to position
                 break;
             case spinup:
-                setLight(0.33);
+                setLight(0.28);
                 intake.setPower(0);
                 holder.setPower(0);
                 //if the shooter has reached the desired speed, set state to armed and hold velocity
@@ -155,18 +155,15 @@ public class ShooterSystem {
                 }
                 break;
             case armed:
+                setLight(0.73);
                 intake.setPower(0);
                 holder.setPower(0);
                 if (shooterAtSpeed() && !nextState) {
                    timer.reset();
-                   setLight(0.388);
-                } else {
-                    setLight(0.33);
                 }
                 //use this if on slow speed
                 if (shooterSpeed == slowShooterSpeedSet &&
                         nextState && (shooterAtSpeed() || timer.seconds() < 0.1)) {
-                    setLight(.5);
                     intake.setPower(0.75);
                     holder.setPower(1);
                 }
@@ -174,7 +171,6 @@ public class ShooterSystem {
                             nextState && shooterAtSpeed()) {
                     intake.setPower(0.75);
                     holder.setPower(1);
-                    setLight(.5);
                 }
                 else if (stopState) {
                     //if stop, then return to intake from stop
