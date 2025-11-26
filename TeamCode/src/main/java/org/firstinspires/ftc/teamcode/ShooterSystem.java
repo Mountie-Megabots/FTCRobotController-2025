@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.BatteryChecker;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.wifi.DriverStationAccessPointAssistant;
 import com.sun.tools.javac.tree.DCTree;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -17,7 +20,8 @@ public class ShooterSystem {
     private final DcMotor lifter;
     private boolean nextState;
     private boolean initIntake = false;
-    private boolean initVar = false;
+
+    private final Servo light;
 
     private boolean stopState;
     ElapsedTime timer;
@@ -41,11 +45,13 @@ public class ShooterSystem {
 
     private State functionState;
 
+
     public ShooterSystem(HardwareMap hm) {
         shooter = hm.get(DcMotor.class, "shooter");
         holder = hm.get(DcMotor.class, "holder");
         intake = hm.get(DcMotor.class, "intake");
         lifter = hm.get(DcMotor.class, "lifter");
+        light = hm.get(Servo.class, "light");
         lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         holder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -89,12 +95,13 @@ public class ShooterSystem {
     }
 
     public void functions() {
-        speedThreshold = shooterSpeed - 50;
+        speedThreshold = shooterSpeed - 75;
         switch (functionState) {
             case Nothing:
                 functionState = State.intake;
                 break;
             case intake:
+
                 holder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 shooter.setPower(-0.2);
                 if (((DcMotorEx) shooter).isOverCurrent()) {
@@ -107,9 +114,11 @@ public class ShooterSystem {
                 }
                 if (((((DcMotorEx) intake).isOverCurrent()  && timer.seconds() > 1) || initIntake) && ((DcMotorEx) shooter).isOverCurrent()) {
                     intake.setPower(0);
+                    setLight(0.61);
                     initIntake = true;
                 } else {
                     intake.setPower(1);
+                    setLight(0.28);
                 }
                 //if right trigger pressed, begin retracting, otherwise stay intaking
                 if ((nextState)) {
@@ -122,6 +131,7 @@ public class ShooterSystem {
                 break;
 
             case retract:
+                setLight(0.33);
                 intake.setPower(-0.75);
                 holder.setPower(-1);
                 if (timer.seconds() > 0.3) {
@@ -133,6 +143,7 @@ public class ShooterSystem {
                 //begin spinning up the shooter otherwise keep moving to position
                 break;
             case spinup:
+                setLight(0.33);
                 intake.setPower(0);
                 holder.setPower(0);
                 //if the shooter has reached the desired speed, set state to armed and hold velocity
@@ -146,12 +157,16 @@ public class ShooterSystem {
             case armed:
                 intake.setPower(0);
                 holder.setPower(0);
-                if (shooterAtSpeed()) {
+                if (shooterAtSpeed() && !nextState) {
                    timer.reset();
+                   setLight(0.388);
+                } else {
+                    setLight(0.33);
                 }
                 //use this if on slow speed
                 if (shooterSpeed == slowShooterSpeedSet &&
                         nextState && (shooterAtSpeed() || timer.seconds() < 0.1)) {
+                    setLight(.5);
                     intake.setPower(0.75);
                     holder.setPower(1);
                 }
@@ -159,6 +174,7 @@ public class ShooterSystem {
                             nextState && shooterAtSpeed()) {
                     intake.setPower(0.75);
                     holder.setPower(1);
+                    setLight(.5);
                 }
                 else if (stopState) {
                     //if stop, then return to intake from stop
@@ -168,8 +184,9 @@ public class ShooterSystem {
             case removeBall:
                 //attempt to remove artifacts in the shooter system
                 intake.setPower(1);
-                holder.setPower(0);
+                holder.setPower(1);
                 shooter.setPower(-1);
+                setLight(1);
             case stop:
                 //reset everything
                 intake.setPower(0);
@@ -181,6 +198,12 @@ public class ShooterSystem {
                 break;
 
         }
+    }
+    private void setLight(double set){
+        if (light.getPosition() == set){
+            return;
+        }
+        light.setPosition(set);
     }
 
     //change shooter speed on left trigger by specified amount 
