@@ -1,22 +1,21 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Red;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
-@Disabled
-@Autonomous(name = "DONOTUSE", group = "DONTUSE")
-public class AutoTemplate extends OpMode {
+@Autonomous(name = "FarSixPieceRed", group = "Red")
+public class FarSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path path1;
+    public Path path1, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -26,6 +25,7 @@ public class AutoTemplate extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -35,12 +35,24 @@ public class AutoTemplate extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
-        //insert bezier line or curve
-        path1 = new Path();
+        follower.setStartingPose(Constants.Paths.FarScoreConst.farStart.mirror());
+        PedroHelper.onRedAlliance();
+        //insert bezier line or 2 poses
+        path1 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farStart,
+                Constants.Paths.FarScoreConst.farScore);
 
         //put in paths in chain
-        pickupChain = new PathChain();
+        path2 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore,
+                Constants.Paths.GrabConst.PPGStart);
+
+        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG.getFirstControlPoint(),
+                Constants.Paths.GrabConst.PPG.getLastControlPoint());
+
+        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG.getLastControlPoint(),
+                Constants.Paths.FarScoreConst.farScore);
+
+        pickupChain = new PathChain(path2, path3, path4);
+        leave = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore, Constants.Paths.FarScoreConst.leave);
     }
 
     private void runPath() {
@@ -48,21 +60,22 @@ public class AutoTemplate extends OpMode {
             case firstPath:
                 follower.followPath(path1, true);
                 pathState = State.shoot1;
+                shooter.setShooterFast();
                 break;
-
             case shoot1:
                 //ready shooter
-                shooter.nextState(true);
                 if (!follower.isBusy()) {
                     //fire
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         pathState = State.toPickup;
+                        shooter.setStopState(true);
+                        shooter.nextState(false);
                     }
-                } else {
-                    timer.reset();
-                }
 
+                } else {
+                    timer.reset(); 
+                }
                 break;
 
             case toPickup:
@@ -72,31 +85,38 @@ public class AutoTemplate extends OpMode {
 
             case shoot2:
                 //Use if grabbing pieces
-                /*
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.4) {
+
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.05) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.3);
+                    follower.setMaxPower(0.25);
                 }
 
-                if (follower.getCurrentPath() == Path4 && !initVar) {
-                    initVar = true;
-                    shooter.nextState(true);
-                    shooter.setStopState(false);
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
                     follower.setMaxPower(1);
+                }
+
+                if (follower.getCurrentPath() == path4 && !initVar) {
+                    initVar = true;
+                    shooter.setStopState(false);
                 }
 
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
-                */
+                break;
+            case leave:
+                break;
+
         }
     }
 

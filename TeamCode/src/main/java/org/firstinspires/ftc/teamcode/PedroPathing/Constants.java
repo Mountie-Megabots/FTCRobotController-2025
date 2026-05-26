@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.PedroPathing;
 
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
@@ -16,19 +16,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
 
-    public static final class paths {
-        public static int farShotHeading = -20;
+    public static final class Paths {
         public static final class GrabConst {
-            public static Pose GPPStart = new Pose(52.000, 84.000, Math.toRadians(180));
-            public static BezierLine GPP = new BezierLine(new Pose(52.000, 84.000, Math.toRadians(180)), new Pose(17.5, 84.000, Math.toRadians(180)));
+            public static Pose GPPStart = new Pose(48.000, 84.000, Math.toRadians(180));
+            public static BezierLine GPP = new BezierLine(new Pose(48.000, 84.000, Math.toRadians(180)), new Pose(23.5, 84.000, Math.toRadians(180)));
             public static BezierLine GPPRev = new BezierLine(new Pose(17.5000, 84.000, Math.toRadians(180)), new Pose(52.000, 84.000, Math.toRadians(180)));
             public static Pose PGPStart = new Pose(48.000, 60.000, Math.toRadians(180));
-            public static BezierLine PGP = new BezierLine(new Pose(48.000, 60.000, Math.toRadians(180)), new Pose(17.500, 60.000, Math.toRadians(180)));
+            public static BezierLine PGP = new BezierLine(new Pose(48.000, 60.000, Math.toRadians(180)), new Pose(23.5, 60.000, Math.toRadians(180)));
             public static Pose PPGStart = new Pose(48.000, 36.000, Math.toRadians(180));
-            public static BezierLine PPG = new BezierLine(new Pose(48.000, 36.000, Math.toRadians(180)), new Pose(17.500, 36.000, Math.toRadians(180)));
+            public static BezierLine PPG = new BezierLine(new Pose(48.000, 36.000, Math.toRadians(180)), new Pose(23.500, 36.000, Math.toRadians(180)));
             //degrees for all: 180
         }
         public static final class FarScoreConst {
+            public static Pose leave = new Pose(55,36, Math.toRadians(90));
             public static Pose farStart = new Pose(56.299065420560744, 8.074766355140188,Math.toRadians(90));
             public static Pose farScore = new Pose (60.5607476635514, 12.785046728971956, Math.toRadians(113));
         }
@@ -42,10 +42,9 @@ public class Constants {
 
             //center
             public static Pose centerStart = new Pose(20.5, 123, Math.toRadians(140));
-            public static Pose centerEnd = new Pose(48, 95.5, Math.toRadians(140));
+            public static Pose centerEnd = new Pose(48, 95.5, Math.toRadians(135));
             public static BezierLine backupCenter = new BezierLine(centerStart, centerEnd);
-
-
+            public static Pose launchLeave = new Pose(25, 95, Math.toRadians(180));
 
             public static Pose curveControlPoint = new Pose(95, 95.776);
         }
@@ -83,9 +82,6 @@ public class Constants {
 
 
     public static ThreeWheelConstants localizerConstants = new ThreeWheelConstants()
-//            .forwardTicksToInches(.001989436789)
-//            .strafeTicksToInches(.001989436789)
-//            .turnTicksToInches(.001989436789)
             .leftPodY(4.0625)
             .rightPodY(-4.0625)
             .strafePodX(-5.125)

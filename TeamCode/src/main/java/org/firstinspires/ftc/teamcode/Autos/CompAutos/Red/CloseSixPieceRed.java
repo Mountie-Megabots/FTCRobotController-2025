@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Red;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "CloseSixPieceBlue", group = "Blue")
-public class CloseSixPieceBlue extends OpMode {
+@Autonomous(name = "CloseSixPieceRed", group = "Red")
+public class CloseSixPieceRed extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path backupShoot, Path2, Path3, Path4;
+    public Path backupShoot, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -25,6 +25,7 @@ public class CloseSixPieceBlue extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -34,19 +35,23 @@ public class CloseSixPieceBlue extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.CloseScoreConst.centerStart);
+        follower.setStartingPose(Constants.Paths.CloseScoreConst.centerStart.mirror());
+        PedroHelper.onRedAlliance();
 
-        backupShoot = new Path(Constants.paths.CloseScoreConst.backupCenter);
-        backupShoot.setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(135));
+        backupShoot = PedroHelper.createLine(Constants.Paths.CloseScoreConst.backupCenter.getFirstControlPoint(),
+                Constants.Paths.CloseScoreConst.backupCenter.getLastControlPoint());
 
-        Path2 = new Path(new BezierLine(Constants.paths.CloseScoreConst.centerEnd, Constants.paths.GrabConst.GPPStart));
-        Path2.setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180));
+        path2 = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd,
+                Constants.Paths.GrabConst.GPPStart);
 
-        Path3 = new Path(Constants.paths.GrabConst.GPP);
-        Path4 = new Path(new BezierLine(Constants.paths.GrabConst.GPP.getLastControlPoint(), Constants.paths.CloseScoreConst.centerEnd));
-        Path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135));
+        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.GPP);
 
-        pickupChain = new PathChain(Path2, Path3, Path4);
+        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.GPP.getLastControlPoint(),
+                Constants.Paths.CloseScoreConst.centerEnd);
+
+        pickupChain = new PathChain(path2, path3, path4);
+
+        leave = PedroHelper.createLine(Constants.Paths.CloseScoreConst.centerEnd, Constants.Paths.CloseScoreConst.launchLeave);
     }
 
     private void runPath() {
@@ -60,7 +65,7 @@ public class CloseSixPieceBlue extends OpMode {
                 shooter.setShooterSlow();
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         pathState = State.toPickup;
                     }
                 } else {
@@ -76,31 +81,37 @@ public class CloseSixPieceBlue extends OpMode {
 
             case shoot2:
                 //path 3 = pickup path
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.1) {
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.1) {
                     shooter.setStopState(true);
                     shooter.nextState(false);
-                    follower.setMaxPower(0.3);
+                    follower.setMaxPower(0.25);
                 }
 
-                if (follower.getCurrentPath() == Path3 && follower.getPathCompletion() > 0.85) {
+                if (follower.getCurrentPath() == path3 && follower.getPathCompletion() > 0.85) {
                     follower.setMaxPower(1);
                 }
 
                 //path 4 = path after path 3 - refer to path 3
-                if (follower.getCurrentPath() == Path4 && !initVar) {
+                if (follower.getCurrentPath() == path4 && !initVar) {
                     initVar = true;
                     shooter.setStopState(false);
                 }
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
+                break;
+            case leave:
+
+                break;
 
         }
     }

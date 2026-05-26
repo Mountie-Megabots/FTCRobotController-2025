@@ -1,20 +1,20 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.Autos.CompAutos.Blue;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autos.PedroHelper;
 import org.firstinspires.ftc.teamcode.ShooterSystem;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 @Autonomous(name = "FarSixPieceBlue", group = "Blue")
 public class FarSixPieceBlue extends OpMode {
     Follower follower;
     ShooterSystem shooter;
-    public Path path1, path2, path3, path4;
+    public Path path1, path2, path3, path4, leave;
     public PathChain pickupChain;
     ElapsedTime timer;
 
@@ -24,6 +24,7 @@ public class FarSixPieceBlue extends OpMode {
         shoot1,
         toPickup,
         shoot2,
+        leave
     }
     private State pathState;
 
@@ -33,18 +34,23 @@ public class FarSixPieceBlue extends OpMode {
         pathState = State.firstPath;
         shooter = new ShooterSystem(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Constants.paths.FarScoreConst.farStart);
-        //insert bezier line or curve
-        path1 = new Path(new BezierLine(Constants.paths.FarScoreConst.farStart, Constants.paths.FarScoreConst.farScore));
+        follower.setStartingPose(Constants.Paths.FarScoreConst.farStart);
+        PedroHelper.onBlueAlliance();
+        //insert bezier line or 2 poses
+        path1 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farStart,
+                Constants.Paths.FarScoreConst.farScore);
         //put in paths in chain
-        path1.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113));
-        path2 = new Path(new BezierLine(Constants.paths.FarScoreConst.farScore, Constants.paths.GrabConst.PPGStart));
-        path2.setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180));
-        path3 = new Path(Constants.paths.GrabConst.PPG);
-        path3.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180));
-        path4 = new Path(new BezierLine(Constants.paths.GrabConst.PPG.getLastControlPoint(), Constants.paths.FarScoreConst.farScore));
-        path4.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(113));
+        path2 = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore,
+                Constants.Paths.GrabConst.PPGStart);
+
+        path3 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG);
+
+        path4 = PedroHelper.createLine(Constants.Paths.GrabConst.PPG.getLastControlPoint(),
+                Constants.Paths.FarScoreConst.farScore);
+
         pickupChain = new PathChain(path2, path3, path4);
+
+        leave = PedroHelper.createLine(Constants.Paths.FarScoreConst.farScore, Constants.Paths.FarScoreConst.leave);
     }
 
     private void runPath() {
@@ -61,7 +67,7 @@ public class FarSixPieceBlue extends OpMode {
                 if (!follower.isBusy()) {
                     //fire
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         pathState = State.toPickup;
                         shooter.setStopState(true);
                         shooter.nextState(false);
@@ -98,14 +104,20 @@ public class FarSixPieceBlue extends OpMode {
 
                 if (!follower.isBusy()) {
                     shooter.nextState(true);
-                    if (timer.seconds() > 5) {
+                    if (timer.seconds() > 4.5) {
                         shooter.setStopState(true);
                         initVar = false;
+                        pathState = State.leave;
+                        follower.followPath(leave, false);
                     }
                 } else {
                     timer.reset();
                 }
+                break;
 
+            case leave:
+
+                break;
         }
     }
 

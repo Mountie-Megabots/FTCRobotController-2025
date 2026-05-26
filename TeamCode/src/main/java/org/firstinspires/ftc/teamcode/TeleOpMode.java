@@ -9,7 +9,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.PedroPathing.Constants;
 
 import java.util.function.Supplier;
 
@@ -69,6 +69,11 @@ public class TeleOpMode extends OpMode {
             follower.followPath(pathToPose.get());
         }
 
+        if (gamepad1.dpad_down) {
+            shooter.runLifter(-0.6);
+        } else if (gamepad1.dpad_up) {
+            shooter.runLifter(0.6);
+        }
         //if automated drive finishes or the joystick is moved then cancel and begin teleop drive
         if (automatedDrive && (joystickMoved() || !follower.isBusy())) {
             follower.startTeleopDrive(true);
@@ -87,12 +92,12 @@ public class TeleOpMode extends OpMode {
         );
 
         //if left trigger was pressed, shoot from afar
-        if (gamepad1.left_trigger > 0.2) {
+        if (gamepad1.left_trigger > 0.2 || gamepad2.left_trigger > 0.2) {
             shooter.nextState(true);
             shooter.setShooterFast();
         }
         //if right trigger was pressed, shoot from close
-        else if (gamepad1.right_trigger > 0.2) {
+        else if (gamepad1.right_trigger > 0.2 || gamepad2.right_trigger > 0.2) {
             shooter.nextState(true);
             shooter.setShooterSlow();
         }
@@ -100,6 +105,7 @@ public class TeleOpMode extends OpMode {
         else {
             shooter.nextState(false);
         }
+
 
         /*
         //increase or decrease the left trigger shoot speed
@@ -110,17 +116,17 @@ public class TeleOpMode extends OpMode {
         if (gamepad1.dpadDownWasPressed()) {
             shooter.changeShooterSpeed(-50);
         }
-        */
+         */
 
         //if b is pressed then go into the stop path of the current state
-        shooter.setStopState(gamepad1.b);
+        shooter.setStopState(gamepad1.b || gamepad2.b);
 
         //if left bumper is pressed, attempt to back out all artifacts in the system
-        if (gamepad1.left_bumper) {
+        if (gamepad1.left_bumper || gamepad2.left_bumper) {
             shooter.intakeBackwards(true);
         }
         //once left bumper is released, then stop, and return to intake state
-        else if (gamepad1.leftBumperWasReleased()) {
+        else if (gamepad1.leftBumperWasReleased() || gamepad2.leftBumperWasReleased()) {
             shooter.intakeBackwards(false);
         }
 
