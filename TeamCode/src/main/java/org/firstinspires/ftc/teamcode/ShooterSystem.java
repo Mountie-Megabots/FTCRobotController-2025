@@ -26,8 +26,10 @@ public class ShooterSystem {
     private boolean stopState;
     ElapsedTime timer;
 
+    double r = 0.3;
+
     int slowShooterSpeedSet = 1750 ;
-    int customShooterSpeedSet = 2350;
+    int customShooterSpeedSet = 2450;
 
     int shooterSpeed = 0;
 
@@ -134,7 +136,8 @@ public class ShooterSystem {
                 setLight(0.28);
                 intake.setPower(-0.75);
                 holder.setPower(-1);
-                if (timer.seconds() > 0.3) {
+                shooter.setPower(-1);
+                if (timer.seconds() > r) {
                     functionState = State.spinup;
                     timer.reset();
                     ((DcMotorEx) shooter).setVelocity(shooterSpeed);
@@ -207,6 +210,10 @@ public class ShooterSystem {
         customShooterSpeedSet += amount;
     }
 
+    public void changeR(double amount) {
+        r += amount;
+    }
+
     public void pushTelemetry(Telemetry telemetry) {
         telemetry.addData("Shooter State", functionState);
         telemetry.addData("Shooter Velocity", ((DcMotorEx) shooter).getVelocity());
@@ -218,5 +225,6 @@ public class ShooterSystem {
         telemetry.addData("initIntake", initIntake);
         telemetry.addData("Lifter Position", lifter.getCurrentPosition());
         telemetry.addData("Shooter Current", ((DcMotorEx) shooter).getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("R", r);
     }
 }
